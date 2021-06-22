@@ -1,0 +1,32 @@
+{
+    "env": {
+        "commonjs": true,
+        "es2020": true,
+        "node": true
+    },
+    "extends": [
+        "prettier",
+        "airbnb-base"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 11
+    },
+    "rules": {
+        "camelcase": "off",
+        "no-console": 0,
+        "max-len": ["error", { "code": 120 }],
+        "operator-linebreak": ["error", "after"],
+        "implicit-arrow-linebreak": 0,
+        "import/no-dynamic-require": 0,
+        "global-require": 0,
+        "no-restricted-syntax": "off",
+        "no-await-in-loop": "off"
+    }
+}
