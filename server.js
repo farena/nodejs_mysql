@@ -1,52 +1,24 @@
 require('dotenv').config(); // Required for environment variables
 
-const https = require('https');
-const fs = require('fs');
-const helmet = require('helmet');
-const errorHandler = require('./app/functions/errorHandler');
-const CustomError = require('./app/functions/CustomError');
-
 // add CustomError to globals
-global.CustomError = CustomError;
+global.CustomError = require('./app/functions/CustomError');
 
+const helmet = require('helmet');
 const express = require('express');
 const compression = require('compression');
-const moment = require('moment-timezone');
 
 const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const { cors } = require('./app/middlewares/cors');
+const { errorHandler } = require('./app/functions/errorHandler');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(compression());
 app.use(helmet()); // Add Helmet as a middleware
-
-// Add headers
-app.use((req, res, next) => {
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  // Request methods you wish to allow
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-  );
-
-  // Request headers you wish to allow
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With,content-type,authorization',
-  );
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  // Pass to next layer of middleware
-  next();
-});
+app.use(cors); // add cors as middleware
 
 // Add Routes and tasks
 const routes = require('./app/routes/index');
@@ -56,7 +28,7 @@ routes.map((x) => app.use(x.basePath, x.router));
 app.use(express.static('public'));
 
 // Main errorHandler
-app.use((err, req, res, next) => { errorHandler(err, req, res, next) });
+app.use((err, req, res, next) => { errorHandler(err, req, res, next); });
 
 // assume 404 since no middleware responded
 app.use((req, res) => {
