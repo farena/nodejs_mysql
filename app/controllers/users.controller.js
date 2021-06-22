@@ -1,6 +1,7 @@
 const models = require('../models');
 const response = require('../functions/serviceUtil.js');
 const auth = require('../middlewares/auth.js');
+const CustomError = require('../functions/CustomError');
 
 module.exports = {
   name: 'usersController',
@@ -15,13 +16,13 @@ module.exports = {
           where: {
             email: req.body.email,
           },
+          transaction,
         });
 
         if (!user) throw new CustomError('Incorrect User or Password', 401);
         if (!user.checkPassword(req.body.password)) throw new CustomError('Incorrect User or Password', 401);
 
-
-        const userRes = Object.assign({}, user);
+        const userRes = { ...user };
         delete userRes.password;
 
         return {
