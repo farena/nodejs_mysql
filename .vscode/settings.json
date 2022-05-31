@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "vetur.validation.template": true,
+  "[vue]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[javascript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+}
