@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const CustomError = require('../functions/CustomError');
 
 // nota: verificar token, hay que formatear las respuetas.
 // eslint-disable-next-line consistent-return
@@ -6,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     let token = req.headers.authorization;
 
-    if (!token) throw new CustomError('Token was not found', 403);
+    if (!token) throw new CustomError('No Token found', 403);
 
     // The token has to start with "Bearer "
     if (token.slice(0, 7) !== 'Bearer ') throw new CustomError('Token is invalid', 401);
