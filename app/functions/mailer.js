@@ -1,3 +1,4 @@
+const hs = require('handlebars');
 const nodemailer = require('nodemailer');
 const config = require('../config/config');
 
@@ -19,4 +20,5 @@ module.exports = {
     maxConnections: 1, // set limit to 1 connection only
     maxMessages: 2, // send 3 emails per second
   }),
+  mailParse: (template, data) => hs.compile(template)(data),
 };
