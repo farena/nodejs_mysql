@@ -10,7 +10,7 @@ module.exports = {
     try {
       // Start Transaction
       const result = await models.sequelize.transaction(async (transaction) => {
-        if (!req.body.password) throw new CustomError('Please send a Password', 412);
+        if (!req.body.password) throw new CustomError('Envía una contraseña por favor', 412);
 
         const user = await models.user.findOne({
           where: {
@@ -19,20 +19,19 @@ module.exports = {
           transaction,
         });
 
-        if (!user) throw new CustomError('Incorrect User or Password', 401);
-        if (!user.checkPassword(req.body.password)) throw new CustomError('Incorrect User or Password', 401);
+        if (!user) throw new CustomError('Usuario o contraseña incorrectos', 401);
+        if (!user.checkPassword(req.body.password)) throw new CustomError('Usuario o contraseña incorrectos', 401);
 
-        const userRes = { ...user };
-        delete userRes.password;
+        const userRes = {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+        };
 
         return {
-          userRes,
-          token: auth.generateAccessToken({
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-          }),
+          user: userRes,
+          token: auth.generateAccessToken(userRes),
         };
       });
       // Transaction complete!
@@ -59,11 +58,6 @@ module.exports = {
         if (req.body.new_password && req.body.new_password.length < 6) {
           throw new CustomError('New Password must have at least 6 characters');
         }
-        if (!req.body.first_name) throw new CustomError('First Name Attribute is required', 412);
-        if (!req.body.last_name) throw new CustomError('Last Name Attribute is required', 412);
-
-        user.first_name = req.body.first_name;
-        user.last_name = req.body.last_name;
         if (req.body.new_password) user.password = req.body.new_password;
         await user.save({ transaction });
 
