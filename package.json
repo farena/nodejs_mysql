@@ -1,7 +1,7 @@
 {
-  "name": "edu_budget_backend",
+  "name": "nodejs_express_mysql",
   "version": "0.9.0",
-  "description": "eduBudget REST API (NodeJS)",
+  "description": "nodeJS + express + mysql | REST API (NodeJS)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
