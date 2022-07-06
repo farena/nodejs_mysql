@@ -1,11 +1,21 @@
 /* eslint-disable no-restricted-syntax */
 const multer = require('multer'); // Middleware to be able to receive files in requests
 const path = require('path');
+const { uuid } = require('uuidv4');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${(uuid()).split('-').join('')}${path.extname(file.originalname)}`);
+  },
+});
 
 // Middleware to be able to receive files in requests
 // Filtering by mimetype. Only PDFs
 const pdfMiddleware = multer({
-  dest: '.temp/',
+  storage,
   fileFilter(req, file, cb) {
     const filetypes = /pdf/;
     const mimetype = filetypes.test(file.mimetype);
@@ -21,7 +31,7 @@ const pdfMiddleware = multer({
 // Middleware to be able to receive files in requests
 // Filtering by mimetype. Only JPG/PNG
 const imageMiddleware = multer({
-  dest: '.temp/',
+  storage,
   fileFilter(req, file, cb) {
     const filetypes = /jpg|jpeg|png/;
     const mimetype = filetypes.test(file.mimetype);
@@ -36,7 +46,7 @@ const imageMiddleware = multer({
 // Middleware to be able to receive files in requests
 // Filtering by mimetype. Only JPG/PNG/PDF
 const imageOrPDFMiddleware = multer({
-  dest: '.temp/',
+  storage,
   fileFilter(req, file, cb) {
     const filetypes = /pdf|jpg|jpeg|png/;
     const mimetype = filetypes.test(file.mimetype);
