@@ -4,8 +4,8 @@ const response = require('./serviceUtil.js');
 const paginate = (query, params, literalSort = false) => {
   const page = params.page || 1;
   const perPage = params.per_page || 10;
-  const sortBy = params.sort_by || null;
-  const sortDir = params.sort_dir || 'ASC';
+  const sortBy = params.sort_by || params.sortBy || null;
+  const sortDir = params.sort_dir || params.sortDir || 'ASC';
 
   const offset = (page - 1) * perPage;
   const limit = parseInt(perPage, 10);
