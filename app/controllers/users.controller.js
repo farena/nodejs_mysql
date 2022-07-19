@@ -2,6 +2,7 @@ const models = require('../models');
 const response = require('../functions/serviceUtil.js');
 const auth = require('../middlewares/auth.js');
 const CustomError = require('../functions/CustomError');
+const validate = require('../functions/validate');
 
 module.exports = {
   name: 'usersController',
@@ -10,7 +11,14 @@ module.exports = {
     try {
       // Start Transaction
       const result = await models.sequelize.transaction(async (transaction) => {
-        if (!req.body.password) throw new CustomError('Envía una contraseña por favor', 412);
+        await validate(req.body, {
+          email: 'required|email',
+          password: 'required',
+        }, {
+          'required.email': 'Envía un email por favor',
+          'email.email': 'El email es inválido',
+          'required.password': 'Envía una contraseña por favor',
+        });
 
         const user = await models.user.findOne({
           where: {
@@ -47,21 +55,25 @@ module.exports = {
     try {
       // Start Transaction
       const result = await models.sequelize.transaction(async (transaction) => {
-        const user = await models.user.findByPk(req.user.id, { transaction });
+        await validate(req.body, {
+          email: 'required|email',
+          password: 'required',
+          new_password: 'required|confirmed|min:6',
+        }, {
+          'required.email': 'Envía un email por favor',
+          'email.email': 'El email es inválido',
+          'required.password': 'Envía tu contraseña actual por favor',
+          'confirmed.new_password': 'Las nuevas contraseñas no son iguales',
+          'min.new_password': 'La nueva contraseña debe tener al menos 6 caracteres',
+        });
 
-        // VALIDATIONS
-        if (!req.body.password) throw new CustomError('You have to send your Actual Password', 412);
+        const user = await models.user.findByPk(req.user.id, { transaction });
         if (!user.checkPassword(req.body.password)) throw new CustomError('The password is incorrect', 412);
-        if (req.body.new_password !== req.body.new_password_confirmation) {
-          throw new CustomError('The New Passwords are not the same', 412);
-        }
-        if (req.body.new_password && req.body.new_password.length < 6) {
-          throw new CustomError('New Password must have at least 6 characters');
-        }
+
         if (req.body.new_password) user.password = req.body.new_password;
         await user.save({ transaction });
 
-        return 'Profile updated succesfully';
+        return 'Perfil actualizado con exito';
       });
 
       // Transaction complete!

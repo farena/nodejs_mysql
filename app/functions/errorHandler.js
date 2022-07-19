@@ -1,5 +1,15 @@
 module.exports = {
   errorHandler: (err, req, res, next) => {
+    if (err.message && typeof err.message === 'object') {
+      return res.status(err.status || err.code || 500)
+        .json({
+          code: err.status || err.code || 500,
+          message: null,
+          success: false,
+          errors: err.message,
+        });
+    }
+
     // treat as 404
     if (
       err.message &&
