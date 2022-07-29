@@ -52,5 +52,5 @@ module.exports = {
   timeout: async (ms) => new Promise((res) => {
     setTimeout(() => { res(); }, ms);
   }),
-
+  loadFile: (relPath) => fs.readFileSync(path.resolve(__dirname, relPath), 'utf8'),
 };

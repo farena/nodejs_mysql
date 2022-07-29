@@ -2,6 +2,26 @@ const hs = require('handlebars');
 const nodemailer = require('nodemailer');
 const config = require('../config/config');
 
+/**
+ * USAGE EXAMPLE:
+  const { loadFile } = require('../functions/fileSystem');
+  const { mail, mailParse } = require('../functions/mailer');
+  const config = require('../config/config');
+
+  const email_template = loadFile('path/to/file');
+  const template_data = {...};
+
+  const mailInfo = await mail.sendMail({
+    from: config.mail_from,
+    bcc: 'bcc@recipient.com',
+    to: 'to@recipient.com',
+    subject: 'My Subject',
+    html: mailParse(email_template, template_data),
+  });
+
+  console.log({ mailInfo });
+ */
+
 module.exports = {
   mail: nodemailer.createTransport({
     host: config.mail_host,
