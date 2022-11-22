@@ -27,6 +27,7 @@
         "import/no-dynamic-require": 0,
         "global-require": 0,
         "no-restricted-syntax": "off",
-        "no-await-in-loop": "off"
+        "no-await-in-loop": "off",
+        "radix": "off"
     }
 }
