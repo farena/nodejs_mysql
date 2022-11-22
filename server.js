@@ -1,4 +1,5 @@
 require('dotenv').config(); // Required for environment variables
+require('./app/functions/utils');
 
 // add CustomError to globals
 global.CustomError = require('./app/functions/CustomError');
