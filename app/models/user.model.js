@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {
-      // Add relationships here
-    }
+    // static associate(models) {
+    //   // Add relationships here
+    // }
 
     checkPassword(password) {
       return bcrypt.compareSync(password, this.password);
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      id: {
+      user_id: {
         allowNull: false,
         autoIncrement: true,
         type: DataTypes.INTEGER,

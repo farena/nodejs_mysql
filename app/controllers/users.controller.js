@@ -31,7 +31,7 @@ module.exports = {
         if (!user.checkPassword(req.body.password)) throw new CustomError('Usuario o contraseña incorrectos', 401);
 
         const userRes = {
-          id: user.id,
+          user_id: user.user_id,
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
@@ -67,7 +67,7 @@ module.exports = {
           'min.new_password': 'La nueva contraseña debe tener al menos 6 caracteres',
         });
 
-        const user = await models.user.findByPk(req.user.id, { transaction });
+        const user = await models.user.findByPk(req.user.user_id, { transaction });
         if (!user.checkPassword(req.body.password)) throw new CustomError('The password is incorrect', 412);
 
         if (req.body.new_password) user.password = req.body.new_password;
