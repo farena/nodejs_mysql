@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Testing Email</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+      }
+      table {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        border-collapse: collapse;
+      }
+      table tr.head td,
+      table tr.footer td {
+        background-color: white;
+        text-align: center;
+        padding: 10px 8px;
+      }
+      table tr.head img {
+        max-width: 100%;
+        max-height: 70px;
+      }
+      table tr.body > td {
+        padding: 10px 20px;
+        background-color: #ccc;
+      }
+      table.bodyContainer {
+        width: 600px;
+        margin: auto;
+        text-align: justify;
+      }
+      table.bodyContainer h2 {
+        text-align: center;
+      }
+      table.bodyContainer .button {
+        background-color: #444b64;
+        border-radius: 1em;
+        padding: 8px 15px;
+        color: white;
+        text-decoration: none;
+        margin: auto;
+        margin-bottom: 25px;
+        display: block;
+        text-align: center;
+        max-width: 180px;
+      }
+      p.pie-qr {
+        font-size: 0.8em;
+      }
+      img.qr-img {
+        width: 250px;
+        height: auto;
+      }
+      .footer b {
+        margin-bottom: 10px;
+      }
+      .footer td {
+        padding-top: 20px !important;
+        padding-bottom: 25px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr class="head">
+        <td>
+          <a href="/" target="_blank">
+            <img src="{{logo_url}}" alt="Logo" />
+          </a>
+        </td>
+      </tr>
+
+      <tr class="body">
+        <td>
+          <table class="bodyContainer">
+            <tr>
+              <td>
+                <h2>New Registration</h2>
+                <p>
+                  Hello {{name}}!
+                  <br /><br />
+                  We are happy to have you with us!
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <tr class="footer">
+        <td>
+          <b>My Brand</b> <br />
+          <small>
+            <i> This is an auto generated email. Please do not reply. </i>
+          </small>
+          <br />
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
