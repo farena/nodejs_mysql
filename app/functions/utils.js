@@ -47,9 +47,16 @@ Array.prototype.groupBy = function (key) {
     return objectsByKeyValue;
   }, {});
 };
+Array.prototype.sortBy = function (attr, dir = 'asc') {
+  return this.sort((a, b) => ((dir === 'asc' ? a[attr] > b[attr] : a[attr] < b[attr]) ? 1 : -1));
+};
 
 String.prototype.ucwords = function () {
   const str = this.toLowerCase();
   return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, (s) =>
     s.toUpperCase());
+};
+String.prototype.capitalize = function () {
+  const str = this.toLowerCase();
+  return `${str[0].toUpperCase()}${str.slice(1, str.length)}`;
 };
