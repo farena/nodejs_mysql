@@ -1,59 +1,57 @@
-# NodeJS + Express + Sequelize (Mysql)
+# NodeJS + Express + Sequel (Mysql)
 
-## Indice
-- [Instalación básica](#instalación-básica)
-- [Paso a Producción](#paso-a-producción)
-- [Configuración](#configuración)
-- [Enrutamiento](#enrutamiento)
-- [Interacción con Base de Datos](#interacción-con-base-de-datos)
-- [Funciones Reutilizables](#funciones-reutilizables)
+## Index
+- [Basic installation](#basic-installation)
+- [Deploy to Production](#deploy-to-production)
+- [Settings](#settings)
+- [Routing](#routing)
+- [Database Interaction](#database-interaction)
+- [Reusable Functions](#reusable-functions)
 
 
-## Instalación básica
+## Basic installation
 
 ```
-// Clona el repositorio
+// Clone the repository
 git clone https://github.com/farena/nodejs_mysql.git
 
-// Instala dependencias
-npm install
+// Install dependencies
+install npm
 
-// Copia .env.example y rellena las variables de DB
+// Copy .env.example and fill in the DB variables
 cp .env.example .env
 
-// Inicia el servidor en modo desarrollo
+// Start the server in development mode
 npm start
 ```
 
-## Paso a producción
+## Deploy to production
 ```
-// Clona el proyecto en la carpeta HOME de tu usuario de CPanel
-
-// Cambia la variable de entorno NODE_ENV a producción
+// Change the environment variable NODE_ENV to production
 // NODE_ENV=production
 
-// Ejecutar aplicación en modo daemon. Se puede hacer con PM2, un administrador de procesos para NodeJS o dentro de CPanel con su administrador de procesos.
+// Run application in daemon mode. It can be done with PM2, a process manager for NodeJS or within CPanel with your process manager.
 
-  - Registro de la app dentro de CPanel 
-  https://docs.cpanel.net/knowledge-base/web-services/how-to-install-a-node.js-application/
+    - Registration of the application within CPanel
+    https://docs.cpanel.net/knowledge-base/web-services/how-to-install-a-node.js-application/
 
-  - Ejecutar aplicación con PM2 - ADVANCED, PRODUCTION PROCESS MANAGER FOR NODE.JS
-  https://desarrolloweb.com/articulos/ejecutar-aplicacion-nodejs-pm2.html
+    - Run application with PM2 - ADVANCED PRODUCTION PROCESS MANAGER FOR NODE.JS
+    https://desarrolloweb.com/articulos/ejecutar-aplicacion-nodejs-pm2.html
 ```
 
-## Configuración 
+## Settings
 
-Suele ser útil tener diferentes valores de configuración según el entorno en el que se ejecuta la aplicación. Por ejemplo, es posible que desee utilizar un PORT diferente para ejecutar el servidor localmente que el que utiliza en su servidor de producción.
+It is often useful to have different configuration values depending on the environment in which the application is running. For example, you might want to use a different PORT to run the server locally than the one you use on your production server.
 
-Para usar variables de entorno, este proyecto usa el plugin `DOTENV`. El directorio raíz de su aplicación tendrá un archivo `.env.example` que define muchas variables de entorno comunes que se utilizarán. Deberá duplicar este archivo y cambiarle el nombre a `.env`, el cual se encuentra ignorado por git.
+To use environment variables, this project uses the `DOTENV` plugin. Your application's root directory will have a `.env.example` file that defines many common environment variables to be used. You will need to duplicate this file and rename it to `.env`, which is ignored by git.
 
-Algunas variables comunes se usan para crear una nueva conexión de base de datos y puede verla funcionando dentro de `/app/config/db.config.js`. Otras variables comúnmente utilizadas a lo largo de la aplicación se almacenan dentro de `/app/config/config.js`.
+Some common variables are used to create a new database connection and you can see it working inside `/app/config/db.config.js`. Other variables used throughout the application are stored within `/app/config/config.js`.
 
-### Usando variables de entorno
+### Using environment variables
 
-Todas las variables creadas en el archivo `.env` se cargarán en la variable global `process.env` cuando su aplicación comienza. 
+All variables created in the `.env` file will be loaded into the global `process.env` variable when your application starts.
 
-La puede utilizar en cualquier parte de la aplicación de esta manera:
+You can use it anywhere in the application like this:
 
 ```
 const port = process.env.PORT;
@@ -61,39 +59,39 @@ const port = process.env.PORT;
 console.log(port); // 3000
 ```
 
-### Modificando una variable de entorno
+### Modifying an environment variable
 
-En caso de modificar una variable dentro de este archivo. Deberá reiniciar la aplicación. Frenando el proceso `npm start` entrando en la consola donde se esta ejecutando y presionando `ctrl + c`, luego deberá volver a iniciar ejecutando nuevamente `npm start`.
+In case of modifying a variable inside this file. you will be able to restart the application. Stopping the `npm start` process by entering the console where `ctrl + c` is being pressed, then you will need to start `npm start` again.
 
-## Enrutamiento
+## Routing
 
-Para la creación de una API Rest con la aplicación debera enrutar las peticiones que vamos a recibir. Para hacerlo usamos el plugin `ExpressJS`. Puede encontrar la documentacion oficial aca: https://expressjs.com/es.
+To create a Rest API with the application, you must route the requests that we are going to receive. To do this we use the `ExpressJS` plugin. You can find the official documentation here: https://expressjs.com.
 
-Dentro de la carpeta `/app/routes` encontrara archivos finalizados en `.router.js`, cada uno de estos archivos contiene las rutas que se deseen utilizar. Se los separa por modulos para mayor claridad a la hora de buscar una ruta. 
+Inside the `/app/routes` folder you will find files ending in `.router.js`, each of these files contains the routes you create. They are separated by modules for a better understanding when looking for a route.
 
-### Rutas Basicas
+### Basic Routes
 ```
 const express = require('express');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('GET Request a ruta raiz');
+router.get('/', (required, res) => {
+    res.send('GET Request for root route');
 });
-router.post('/', (req, res) => {
-  res.send('POST Request a ruta raiz');
+router.post('/', (required, res) => {
+    res.send('POST Request a root path');
 });
 
-router.put('/', (req, res) => {
-  res.send('PUT Request a ruta raiz');
+router.put('/', (required, res) => {
+    res.send('PUT Request for root path');
 });
-router.delete('/', (req, res) => {
-  res.send('DELETE Request a ruta raiz');
+router.delete('/', (required, res) => {
+    res.send('DELETE Root Route Request');
 });
 ```
 
-### Rutas con Middleware
+### Routes with Middleware
 
-Para transformar, validar o rechazar una petición, Express utiliza middlewares. Para pasar un middleware a una ruta, basta con agregarlo dentro de un array previo a la función final a ejecutar.
+To transform, validate or reject a request, Express uses middlewares. To pass a middleware to a route, simply add it inside an array before the final function to be executed.
 
 ```
 const express = require('express');
@@ -101,21 +99,21 @@ const router = express.Router();
 const { authMiddleware } = require('../middlewares/auth.js');
 
 router.get('/users', [authMiddleware], (req, res) => {
-  res.send('Felicidades! Usted tiene acceso a este recurso.');
+    res.send('Congratulations! You have access to this resource.');
 });
 
 
 module.exports = {
-  basePath: '/',
-  router,
+    basepath: '/',
+    router,
 };
 ```
 
-### Grupos de rutas
+### Route groups
 
-Como puede ver en el ejemplo anterior, al final del archivo se exporta un objeto con 2 variables. `basePath` y `router`.
+As you can see in the example above, an object with 2 variables is exported at the end of the file. `basePath` and `router`.
 
-BasePath va a ser la base desde la que se crearan las rutas para ese archivo. Mientras que en router, se exportaran las rutas creadas.
+BasePath will be the base from which the paths for that file will be created. While in router, the created routes will be exported.
 
 ```
 // GET /users
@@ -126,21 +124,21 @@ router.get('/:id', [], function () {});
 
 
 module.exports = {
-  basePath: '/users',
-  router,
+    basePath: '/users',
+    router,
 };
 ```
 
-### Controladores
+### Controllers
 
-Como puede ver, las rutas ejecutan una función al ser requeridas por un usuario. Para una mejor organización, estas funciones se las exporta desde los `controllers`. Y se utilizan de la siguiente manera.
+As you can see, routes execute a function when requested by a user. For better organization, these functions are exported from the `controllers`. And it is used as follows.
 
 ```
 // users.router.js
 
 const express = require('express');
 const router = express.Router();
-// El archivo index, exporta todos los controllers
+// The index file, export all controllers
 const controllers = require('../controllers/index');
 const { authMiddleware } = require('../middlewares/auth.js');
 
@@ -150,17 +148,17 @@ router.get('/users', [authMiddleware], controllers.usersController.index);
 // users.controller.js
 
 module.exports = {
-  name: 'usersController', // nombre utilizado para acceder desde el router
+   name: 'usersController', // name used to access from the router
 
-  index: (req, res) => {
-    res.send('Felicidades! Accediste a este recurso desde un controlador.');
-  },
+   index: (req, res) => {
+     res.send('Congratulations! You accessed this resource from a controller.');
+   },
 }
 ```
 
-### Manejo de errores
+### Error handling
 
-Para el manejo de errores, la aplicación utiliza un `errorHandler` ubicado en `/app/functions/errorHandler.js`. Este es ejecutado cada vez que Express tira un error. 
+For error handling, the application uses an `errorHandler` located in `/app/functions/errorHandler.js`. This is executed every time Express throws an error.
 
 
 ```
@@ -168,26 +166,26 @@ Para el manejo de errores, la aplicación utiliza un `errorHandler` ubicado en `
 const CustomError = require('../functions/CustomError.js');
 
 module.exports = {
-  name: 'usersController', 
+   name: 'usersController',
 
-  index: (req, res, next) => {
-    try {
-      // Tiramos un error para probar
-      throw new CustomError('Error de prueba')
+   index: (req, res, next) => {
+     try {
+       // Throw an error to test
+       throw new CustomError('Test Error')
 
-      res.send('Este mensaje no se podra ver');
-    } catch (error) {
-      // capturamos el error con catch 
-      // y lo enviamos al errorHandler
-      next(error); 
-    }
-  },
+       res.send('This message cannot be seen');
+     } catch(error) {
+       // catch the error with catch
+       // and send it to the errorHandler
+       next(error);
+     }
+   },
 }
 ```
 
-### Parametros
+### Parameters
 
-Para obtener los datos de un usuario en particular, use parametros en las rutas.
+To get the data of a particular user, use parameters in the routes.
 
 ```
 // users.router.js
@@ -197,7 +195,7 @@ const router = express.Router();
 const controllers = require('../controllers/index');
 const { authMiddleware } = require('../middlewares/auth.js');
 
-// Enviamos el USER_ID para consultar en la DB
+// We send the USER_ID to consult the DB
 router.get('/users/:user_id', [authMiddleware], controllers.usersController.show);
 ```
 
@@ -205,98 +203,98 @@ router.get('/users/:user_id', [authMiddleware], controllers.usersController.show
 ```
 // users.controller.js
 module.exports = {
-  name: 'usersController', 
+   name: 'usersController',
 
-  index: (req, res, next) => {
-    try {
-      // Guardamos USER_ID en variable
-      const id = req.params.user_id; 
+   index: (req, res, next) => {
+     try {
+       // We save USER_ID in variable
+       const id = req.params.user_id;
 
-      res.send(`Información del usuario con ID: ${id}`);
-    } catch (error) {
-      next(error); 
-    }
-  },
+       res.send(`User information with ID: ${id}`);
+     } catch(error) {
+       next(error);
+     }
+   },
 }
 ```
 
-### Variables enviadas por HTTP
+### Variables sent by HTTP
 
-Al recibir peticiones por HTTP, se envian comunmente variables con información para consultar o guardar en DB.
+When receiving HTTP requests, variables are commonly sent with information to consult or save in DB.
 
-En el caso de una petición POST, PUT y DELETE, se enviaran variables en el BODY de la peticion. Mientras que una petición GET se enviaran en la misma ruta.
+In the case of a POST, PUT and DELETE request, variables will be sent in the BODY of the request. While a GET request will be sent in the same route.
 
-Aca unos ejemplos:
+Here some examples:
 
 ```
-// Se envia una petición GET a /users con 2 variables.
+// Send a GET request to /users with 2 variables.
 GET: /users?status=active&role=admin
 ```
 
 ```
 // users.controller.js
 module.exports = {
-  name: 'usersController', 
+   name: 'usersController',
 
-  index: (req, res, next) => {
-    try {
-      // Para peticiones GET, obtenemos las variables desde req.query
-      const status = req.query.status; 
-      const role = req.query.role; 
+   index: (req, res, next) => {
+     try {
+       // For GET requests, get the variables from req.query
+       const status = req.query.status;
+       const role = req.query.role;
 
-      console.log(status); // 'active'
-      console.log(role); // 'admin'
+       console. log(status); // 'activate'
+       console. log(role); // 'admin'
 
-      res.send('Respuesta');
-    } catch (error) {
-      next(error); 
-    }
-  },
+       res.send('Response');
+     } catch(error) {
+       next(error);
+     }
+   },
 }
 ```
 
 ```
-// Se envia una petición POST a /users con 2 variables.
+// Send a POST request to /users with 2 variables.
 POST: /users
 BODY: {
-  name: 'Juan',
-  email: 'juan@example.com'
+   name: 'John',
+   email: 'john@example.com'
 }
 ```
 
 ```
 // users.controller.js
 module.exports = {
-  name: 'usersController', 
+   name: 'usersController',
 
-  index: (req, res, next) => {
-    try {
-      // Para peticiones POST, obtenemos las variables desde req.body
-      const name = req.body.name; 
-      const email = req.body.email; 
+   index: (req, res, next) => {
+     try {
+       // For POST requests, get the variables from req.body
+       const name = req.body.name;
+       const email = req.body.email;
 
-      console.log(name); // 'active'
-      console.log(email); // 'admin'
+       console. log(name); // 'activate'
+       console.log(email); // 'admin'
 
-      res.send('Respuesta');
-    } catch (error) {
-      next(error); 
-    }
-  },
+       res.send('Response');
+     } catch(error) {
+       next(error);
+     }
+   },
 }
 ```
 
-## Interacción con Base de Datos 
+## Database Interaction
 
-Para la Interacción con la Base de Datos la aplicación utiliza el ORM `Sequelize`. Puede acceder a la documentación completa de este aca: https://runebook.dev/es/docs/sequelize/manual/getting-started
+To interact with the Database the application uses the ORM `Sequelize`. You can access the full documentation here: https://sequelize.org/docs/v6/getting-started/
 
 ### Models
 
-Un Model es una representación de una tabla en la base de datos, en formato de Object de JS. De esta manera podemos ejecutar querys a la DB de una manera mucho mas simple.
+A Model is a representation of a table in the database, in JS Object format. In this way we can execute queries to the DB in a much simpler way.
 
-Los puede encontrar en la carpeta `/app/models` y cada modelo termina con `.model.js`. Por convención, el nombre de un modelo, asi como su tabla en la DB se escribe de manera SINGULAR. Por ejemplo: `user.model.js`
+You can find them in the `/app/models` folder and each model ends with `.model.js`. By convention, the name of a model, as well as its table in the DB, is written in the SINGULAR. For example: `user.model.js`
 
-Los Models se usan `SIEMPRE` en un controller.
+Models are used commonly in a controller.
 
 ```
 // user.model.js
@@ -304,94 +302,94 @@ const { Model } = require('sequelize');
 const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    static associate(models) {
-      // Aca se agregaran las relaciones con otros modelos.
-    }
-  }
-  User.init(
-    {
-      user_id: {
-        allowNull: false,
-        autoIncrement: true,
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: DataTypes.STRING,
-      },
-    },
-    {
-      sequelize,
-      modelName: 'user', // Nombre para acceder al modelo.
-    },
-  );
-  return User;
+   class User extends Model {
+     static associate(models) {
+       // Here the relationships with other models will be added.
+     }
+   }
+   User.init(
+     {
+       user_id: {
+         allowNull: false,
+         autoIncrement: true,
+         type: DataTypes.INTEGER,
+         primaryKey: true,
+       },
+       name: {
+         type: DataTypes.STRING,
+       },
+       email: {
+         type: DataTypes.STRING,
+         allowNull: false,
+         unique: true,
+       },
+       password: {
+         type: DataTypes.STRING,
+       },
+     },
+     {
+       sequelize,
+       modelName: 'user', // Name to access the model.
+     },
+   );
+   return User;
 };
 ```
 
 ```
 // users.controller.js
-// El archivo index de esta carpeta, exporta todos los models
-const models = require('../models'); 
+// The index file in this folder, export all models
+const models = require('../models');
 
 module.exports = {
-  name: 'usersController', 
+   name: 'usersController',
 
-  index: async (req, res, next) => {
-    try {
-      // Pedimos a la DB el usuario con el ID enviado por parametro
-      // Accedemos al model por el `modelName` asignado en su archivo.
-      const user = await models.user.findByPk(req.params.id);
+   index: async(req, res, next) => {
+     try {
+       // We ask the DB for the user with the ID sent by parameter
+       // Access the model by the `modelName` assigned in its file.
+       const user = await models.user.findByPk(req.params.id);
       
-      res.send(user); // Devolvemos el usuario como respuesta
-      res.end(); // Terminamos la respuesta aca.
-    } catch (error) {
-      next(error); 
-    }
-  },
+       res. send(user); // We return the user as a response
+       res.end(); // We end the response here.
+     } catch(error) {
+       next(error);
+     }
+   },
 }
 ```
 
 ### Migrations
 
-Se utilizan migrations para la creación, modificación o eliminación de cualquier entidad en la DB. `ES MUY IMPORTANTE` que se utilice esta funcionalidad, ya que al querer levantar un nuevo entorno de la app, no va a ser necesario hacer un dump de la DB anterior, solo se correria el comando `npm run migrate`.
+Migrations are used for the creation, modification or deletion of any entity in the DB. `IT IS VERY IMPORTANT` that this functionality is used, since when wanting to create a new environment for the app, it will not be necessary to dump the previous DB, just run the `npm run migrate` command.
 
-Las Migrations deben ser creadas siempre utilizando la fecha y hora en que se crearon, o al menos la fecha y un numero de orden. Para que estas sean ejecutadas siempre en el mismo orden. 
+Migrations should always be created using the date and time they were created, or at least the date and an order number. So that they are always executed in the same order.
 
-Ejemplo: `20210108125000-create-user.js`. 
+Example: `20210108125000-create-user.js`.
 
-Se puede ver que se creo esta migration el dia 08/01/2021 a las 12:50:00. Y se le agrego `-create-user` para su facil identificación.
+You can see that this migration was created on 01/08/2021 at 12:50:00. And added `-create-user` for easy identification.
 
-## Funciones Reutilizables
+## Reusable Functions
 
-En una API Restful muy comunmente se necesiten realizar acciones como `envio de emails`, `creación/eliminación de archivos`, `exportación de XLS`, `paginado server-side`, `validación de datos recibidos`, `formateo de respuestas`. Dispone de un set de funciones reutilizables y expandibles a su gusto dentro de la carpeta `/app/functions`
+In a Restful API, actions such as `sending emails`, `creating/deleting files`, `exporting XLS`, `server-side pagination`, `validation of received data`, `response formatting` are commonly needed. It has a set of reusable and expandable functions inside the `/app/functions` folder.
 
-### Envio de Emails
+### Sending Emails
 
-Para esto utilizamos el plugin `NodeMailer`. Puede acceder a su documentación oficial aca: https://nodemailer.com/
+To this we use the `NodeMailer` plugin. You can access its official documentation here: https://nodemailer.com/
 
-Este plugin por si solo, no dispone de un parser para HTML. Para esto usamos el plugin `HandlebarsJS`. Su documentación se encuentra aca: https://handlebarsjs.com/
+This plugin by itself does not have an HTML parser. For this we use the `HandlebarsJS` plugin. Its documentation is here: https://handlebarsjs.com/
 
-Ejemplo para envio de un email:
+Example for sending an email:
 
 ```
 // email_templates/my_template.html
 <html>
-  <head>
-    ...
-  </head>
-  <body>
-    <h1>Gracias por su apoyo señor/a {{name}}!</h1>
-  </body>
+   <head>
+     ...
+   </head>
+   <body>
+     <h1>Thank you for your support Mr. {{name}}!</h1>
+   </body>
 </html>
 ```
 ```
@@ -402,50 +400,50 @@ const config = require('../config/config');
 
 
 module.exports = {
-  name: 'usersController',
+   name: 'usersController',
 
-  sendEmail: async (req, res) => {
-    const email_template = loadFile('../email_templates/my_template.html');
-    const template_data = {
-      name: 'Juan Perez',
-    };
+   sendEmail: async(req, res) => {
+     const email_template = loadFile('../email_templates/my_template.html');
+     const template_data = {
+       name: 'John Doe',
+     };
 
-    const mailInfo = await mail.sendMail({
-      // Tomamos desde el config. El email desde el que enviaremos
-      from: config.mail_from, 
+     const mailInfo = await mail.sendMail({
+       // We take from the config. The email from which we will send
+       from: config.mail_from,
       
-      // Destinatario
-      to: 'to@recipient.com',
+       // Email Address
+       to: 'to@recipient.com',
 
-      // Podemos enviar una copia oculta (Opcional)
-      bcc: 'bcc@recipient.com',
+       // We can send a hidden copy (Optional)
+       bcc: 'bcc@recipient.com',
 
-      // Asunto
-      subject: 'My Subject',
+       // Email subject
+       subject: 'My Subject',
 
-      // HTML a enviar. Lo debemos parsear para reemplazar la data dentro
-      html: mailParse(email_template, template_data),
-    });
+       // HTML to send. We must parse it to replace the data inside
+       html: mailParse(email_template, template_data),
+     });
 
-    console.log({ mailInfo });
+     console.log({ mailInfo });
 
-    res.send('Email enviado con exito');
-    res.end();
-  },
+     res.send('Email sent successfully');
+     res.end();
+   },
 }
 ```
 
-### Manejo de Archivos
+### File management
 
-Para el manejo de archivos en el servidor, el plugin utilizado es `fs-extra`. Puede encontrar su documentación aca: https://github.com/jprichardson/node-fs-extra
+For file management on the server, the plugin used is `fs-extra`. You can find its documentation here: https://github.com/jprichardson/node-fs-extra
 
-Dentro del archivo `/functions/fileSystem.js` puede encontrar algunos helpers. Sientase libre de agregar mas helpers en caso de necesitarlos.
+Inside the `/functions/fileSystem.js` file you can find some helpers. Feel free to add more helpers if you need them.
 
-### Creación de XLS
+### XLS Creation
 
-Para realizar esta función usamos el plugin `excel4node`. Su documentación se encuentra aca: https://github.com/advisr-io/excel4node
+To perform this function we use the `excel4node` plugin. Its documentation is here: https://github.com/advisr-io/excel4node
 
-Ejemplo de uso: 
+Usage example:
 
 ```
 // users.controller.js
@@ -453,58 +451,58 @@ const jsonToXls = require('../functions/jsonToXls');
 
 
 module.exports = {
-  name: 'usersController',
+   name: 'usersController',
 
-  downloadXls: async (req, res) => {
-    const hoja1 = [
-      {
-        nombre: 'Gustavo Cerati',
-        profesion: 'Musico',
-        deuda: 15000,
-      },
-      {
-        nombre: 'Marcelo Tinelli',
-        profesion: 'Conductor de TV',
-        deuda: 10000,
-      },
-      {
-        nombre: 'Valeria Mazza',
-        profesion: 'Modelo',
-        deuda: 25000,
-      },
-    ];
+   downloadXls: async(req, res) => {
+     const sheet1 = [
+       {
+         name: 'Gustavo Cerati',
+         profession: 'Musician',
+         debt: 15000,
+       },
+       {
+         name: 'Marcelo Tinelli',
+         profession: 'TV host',
+         debt: 10000,
+       },
+       {
+         name: 'Valeria Mazza',
+         profession: 'Model',
+         debt: 25000,
+       },
+     ];
 
-    const hoja2 = [
-      ... // datos hoja 2
-    ];
+     const sheet2 = [
+       ... // data sheet 2
+     ];
 
-    const options = {
-      // Podemos pasar el nombre de los atributos tipo Money
-      // para que queden parseados de esta manera en el XLS
-      moneyCells: ['deuda'] 
-    };
+     const options = {
+       // We can pass the name of the Money type attributes
+       // so that they are parsed in this way in the XLS
+       moneyCells: ['debt']
+     };
 
-    const xlsPath = await jsonToXls(
-      // Array con las hojas. 
-      // Se puede enviar una o varias, 
-      // pero siempre dentro de un array
-      [hoja1, hoja2], 
+     const xlsPath = await jsonToXls(
+       // Array with the pages.
+       // You can send one or more,
+       // but always inside an array
+       [sheet1, sheet2],
 
-      // Opciones
-      options,
-    ); 
+       // Options
+       options,
+     );
 
-    res.send('Email enviado con exito');
-    res.end();
-  },
+     res.send('Email sent successfully');
+     res.end();
+   },
 }
 ```
 
 
-### Formateo de Respuestas
+### Response Formatting
 
-Para cumplir con las convenciones de una API Restful, se recomienda ser consistente en las respuestas emitidas.
-Puede encontrar una forma facil de realizar esto utilizando la función encapsulada dentro del archivo `src/functions/serviceUtil.js`.
+To comply with the conventions of a Restful API, it is recommended to be consistent in the responses issued.
+You can find an easy way to do this by using the function wrapped inside the `src/functions/serviceUtil.js` file.
 
 ```
 // posts.controller.js
@@ -513,120 +511,120 @@ const validate = require('../functions/validate');
 const response = require('../functions/serviceUtil.js');
 
 module.exports = {
-  name: 'postsController',
+   name: 'postController',
 
-  create: async (req, res, next) => {
-    try {
-      // Start Transaction
-      const result = await models.sequelize.transaction(async (transaction) => {
-        await validate(
-          // Datos a validar
-          req.body, 
+   create: async(req, res, next) => {
+     try {
+       // Start Transaction
+       const result = await models.sequelize.transaction(async(transaction) => {
+         await validate(
+           // Data to validate
+           req.body,
           
-          // Reglas para la validación
-          {
-            title: 'required|max:255',
-            body: 'required',
-          }, 
+           // Rules for validation
+           {
+             title: 'required|max:255',
+             body: 'required',
+           },
           
-          // Mensajes Personalizados en caso de error para cada regla
-          {
-            'required.title': 'El titulo es requerido',
-            'max.title': 'El titulo no puede tener mas de 255 caracteres',
-            'required.body': 'El cuerpo del post es requerido',
-          }
-        );
+           // Custom messages in case of error for each rule
+           {
+             'required.title': 'The title is required',
+             'max.title': 'The title cannot have more than 255 characters',
+             'required.body': 'The body of the post is required',
+           }
+         );
 
-        await models.post.create({
-          title: req.body.title,
-          body: req.body.body,
-        }, { transaction });
+         await models.post.create({
+           title: req.body.title,
+           body: req.body.body,
+         }, { transaction });
 
-        return 'Post Creado con exito';
-      });
-      // Transaction complete!
-      res.status(200).send(response.getResponseCustom(200, result));
-      res.end();
-    } catch (error) {
-      // Transaction Failed!
-      next(error);
-    }
-  },
+         return 'Post Created successfully';
+       });
+       // Transaction complete!
+       res.status(200).send(response.getResponseCustom(200, result));
+       res.end();
+     } catch(error) {
+       // Transaction Failed!
+       next(error);
+     }
+   },
 }
 
-/// La respuesta sera:
+/// The response will be:
 {
-  code: 200,
-  message: 'Successful operation!',
-  success: true,
-  data: 'Post Creado con exito',
+   code: 200,
+   message: 'Successful operation!',
+   success: true,
+   data: 'Post Created successfully',
 };
 ```
 
-### Paginado Server-Side
+### Server-Side Pagination
 
-Para evitar el exceso de información enviada por peticiones HTTP se suele utilizar la paginación server-side. Para lograr esto tenemos un conjunto de funciones que se encuentran en el archivo `/app/functions/paginable.js`.
+To avoid the excess of information sent by HTTP requests, server-side pagination is usually used. To achieve this we have a set of functions found in the `/app/functions/paginable.js` file.
 
-Ejemplo de uso:
+Usage example:
 
 ```
 // posts.controller.js
 const models = require('../models');
-const paginable = require('../functions/paginable');
+const pageable = require('../functions/pageable');
 
 module.exports = {
-  name: 'postsController',
+   name: 'postController',
 
-  index: async (req, res, next) => {
-    try {
-    // Start Transaction
-      const result = await models.sequelize.transaction(async (transaction) => {
-        const posts = await models.post.findAndCountAll(
-          paginable.paginate({ 
-            transaction,
-            // aca se puede hacer la query necesaria con sequelize
-          }, req.query),
-        );
+   index: async(req, res, next) => {
+     try {
+     // Start Transaction
+       const result = await models.sequelize.transaction(async(transaction) => {
+         const posts = await models.post.findAndCountAll(
+           pageable.paginate({
+             transaction,
+             // here you can do the necessary query with sequelize
+           }, req.query),
+         );
 
-        return posts;
-      });
-      // Transaction complete!
-      res.status(200).send(paginable.paginatedResponse(result, req.query));
-      res.end();
-    } catch (error) {
-    // Transaction Failed!
-      next(error);
-    }
-  },
+         return posts;
+       });
+       // Transaction complete!
+       res.status(200).send(paginable.paginatedResponse(result, req.query));
+       res.end();
+     } catch(error) {
+     // Transaction Failed!
+       next(error);
+     }
+   },
 }
 
-/// La Respuesta sera:
+/// The response will be:
 {
-  code: 200,
-  message: 'Successful operation!',
-  success: true,
-  data: {
-    total: 125, // Cantidad de rows en DB
-    per_page: 10, // Cantidad de rows en respuesta
-    current_page: 1, // Pagina actual
-    last_page: 13, // Ultima pagina
-    from: 1, // Row de inicio en esta respuesta
-    to: 10, // Row final en esta respuesta
-    data: [
-      ... // Data paginada 
-    ],
-  },
+   code: 200,
+   message: 'Successful operation!',
+   success: true,
+   data: {
+     total: 125, // Number of rows in DB
+     per_page: 10, // Number of rows in response
+     current_page: 1, // Current page
+     last_page: 13, // Last page
+     from: 1, // Starting row in this response
+     to: 10, // Final Row in this response
+     data: [
+       ... // Paged data
+     ],
+   },
 };
 
 ```
 
-### Validación de Datos recibidos.
+### Validation of data received.
 
-Para una rapida validación de los datos recibidos usamos el plugin `ValidatorJS`. Su documentación se puede encontrar aca: https://github.com/mikeerickson/validatorjs.
+For a quick validation of the received data we use the `ValidatorJS` plugin. Its documentation can be found here: https://github.com/mikeerickson/validatorjs.
 
-Se creo un wrapper para este validador, utilizando nuestro `errorHandler` para capturar sus errores y enviarlos directamente al usuario final.
+A wrapper was created for this validator, using our `errorHandler` to catch its errors and send them directly to the end user.
 
-Ejemplo de uso: 
+Usage example:
 
 ```
 // posts.controller.js
@@ -634,44 +632,44 @@ const models = require('../models');
 const validate = require('../functions/validate');
 
 module.exports = {
-  name: 'postsController',
+   name: 'postController',
 
-  create: async (req, res, next) => {
-    try {
-      // Start Transaction
-      const result = await models.sequelize.transaction(async (transaction) => {
-        await validate(
-          // Datos a validar
-          req.body, 
+   create: async(req, res, next) => {
+     try {
+       // Start Transaction
+       const result = await models.sequelize.transaction(async(transaction) => {
+         await validate(
+           // Data to validate
+           req.body,
           
-          // Reglas para la validación
-          {
-            title: 'required|max:255',
-            body: 'required',
-          }, 
+           // Rules for validation
+           {
+             title: 'required|max:255',
+             body: 'required',
+           },
           
-          // Mensajes Personalizados en caso de error para cada regla
-          {
-            'required.title': 'El titulo es requerido',
-            'max.title': 'El titulo no puede tener mas de 255 caracteres',
-            'required.body': 'El cuerpo del post es requerido',
-          }
-        );
+           // Custom messages in case of error for each rule
+           {
+             'required.title': 'The title is required',
+             'max.title': 'The title cannot have more than 255 characters',
+             'required.body': 'The body of the post is required',
+           }
+         );
 
-        await models.post.create({
-          title: req.body.title,
-          body: req.body.body,
-        }, { transaction });
+         await models.post.create({
+           title: req.body.title,
+           body: req.body.body,
+         }, { transaction });
 
-        return 'Post Creado con exito';
-      });
-      // Transaction complete!
-      res.status(200).send(result);
-      res.end();
-    } catch (error) {
-      // Transaction Failed!
-      next(error);
-    }
-  },
+         return 'Post Created successfully';
+       });
+       // Transaction complete!
+       res.status(200).send(result);
+       res.end();
+     } catch(error) {
+       // Transaction Failed!
+       next(error);
+     }
+   },
 }
 ```
