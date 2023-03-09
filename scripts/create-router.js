@@ -1,39 +1,33 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = (name, pluralName, utils_dir) => {
+module.exports = (name, pluralName) => {
   const camelCaseName = pluralName.split('_').map((x) => `${x[0].toUpperCase()}${x.slice(1)}`).join('');
 
   const template = `const express = require('express');
 
 const router = express.Router();
 const controllers = require('../controllers/index');
-const { authMiddleware } = require('${utils_dir}/auth.js');
-const { routeACL } = require('${utils_dir}/middlewares.js');
+const { authMiddleware } = require('../middlewares/auth.js');
 
 router.get('/', [
   authMiddleware,
-  routeACL('${pluralName}.index'),
 ], controllers.${camelCaseName}Controller.index);
 
 router.post('/', [
   authMiddleware,
-  routeACL('${pluralName}.create'),
 ], controllers.${camelCaseName}Controller.create);
 
 router.get('/:${name}_id', [
   authMiddleware,
-  routeACL('${pluralName}.show'),
 ], controllers.${camelCaseName}Controller.show);
 
 router.put('/:${name}_id', [
   authMiddleware,
-  routeACL('${pluralName}.update'),
 ], controllers.${camelCaseName}Controller.update);
 
 router.delete('/:${name}_id', [
   authMiddleware,
-  routeACL('${pluralName}.destroy'),
 ], controllers.${camelCaseName}Controller.delete);
 
 module.exports = {
