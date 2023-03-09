@@ -1,16 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = (name) => {
-  const pluralName = name.slice(-1) === 's' ? `${name}es` : `${name}s`;
+module.exports = (name, pluralName, utils_dir) => {
   const camelCaseName = pluralName.split('_').map((x) => `${x[0].toUpperCase()}${x.slice(1)}`).join('');
 
   const template = `const express = require('express');
 
 const router = express.Router();
 const controllers = require('../controllers/index');
-const { authMiddleware } = require('../utils/auth.js');
-const { routeACL } = require('../utils/middlewares.js');
+const { authMiddleware } = require('${utils_dir}/auth.js');
+const { routeACL } = require('${utils_dir}/middlewares.js');
 
 router.get('/', [
   authMiddleware,
