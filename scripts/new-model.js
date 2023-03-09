@@ -55,7 +55,7 @@ try {
 
   if (options.seeder) createSeeder(name);
   if (options.controller) createController(name, pluralName, utils_dir);
-  if (options.router) createRouter(name, pluralName, utils_dir);
+  if (options.router) createRouter(name, pluralName);
 } catch (error) {
   console.error(error);
 }
