@@ -1,14 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = (name) => {
-  const pluralName = name.slice(-1) === 's' ? `${name}es` : `${name}s`;
+module.exports = (name, pluralName, utils_dir) => {
   const camelCaseName = pluralName.split('_').map((x) => `${x[0].toUpperCase()}${x.slice(1)}`).join('');
 
   const template = `const models = require('../models');
-const response = require('../utils/serviceUtil.js');
-const paginable = require('../utils/paginable.js');
-const CustomError = require('../utils/CustomError.js');
+const response = require('${utils_dir}/serviceUtil.js');
+const paginable = require('${utils_dir}/paginable.js');
+const CustomError = require('${utils_dir}/CustomError.js');
 
 module.exports = {
   name: '${camelCaseName}Controller',
@@ -125,7 +124,7 @@ module.exports = {
 };
 `;
 
-  const relPath = path.resolve(__dirname, `../app/controllers/${name}.controller.js`);
+  const relPath = path.resolve(__dirname, `../app/controllers/${pluralName}.controller.js`);
 
   if (fs.existsSync(relPath)) throw new Error(`There is already a controller in path: ${relPath}`);
 
@@ -133,7 +132,7 @@ module.exports = {
     // In case of a error throw err.
     if (err) throw err;
     else {
-      console.log(`Controller created in /app/controllers/${name}.controller.js`);
+      console.log(`Controller created in /app/controllers/${pluralName}.controller.js`);
     }
   });
 };
