@@ -5,6 +5,24 @@ const createSeeder = require('./create-seeder');
 const createController = require('./create-controller');
 const createRouter = require('./create-router');
 
+const parseUtilsDir = (utils_dir) => {
+  if (!utils_dir) return '../functions';
+
+  const dirStack = utils_dir.split('/');
+  dirStack[0] = '..';
+  return dirStack.join('/');
+};
+
+const parsePluralName = (name) => {
+  let pluralName = name;
+  switch (name.slice(-1)) {
+    case 'y': pluralName = `${name.slice(0, -1)}ies`; break;
+    case 's': pluralName = `${name}es`; break;
+    default: pluralName = `${name}s`; break;
+  }
+  return pluralName;
+};
+
 try {
   const options = yargs
     .usage('Usage: -n <name> [--no-stamps|--no-timestamps] [-s|--seeder] [-c|--controller] [-r|--router]')
@@ -23,16 +41,21 @@ try {
     .option('r', {
       alias: 'router', describe: 'Create router template', type: 'boolean', demandOption: false,
     })
+    .option('utils_dir', {
+      describe: 'Utils directory path from root folder', type: 'string', demandOption: false,
+    })
     .argv;
 
   const name = options.name.replace(/\.?([A-Z]+)/g, (x, y) => `_${y.toLowerCase()}`).replace(/^_/, '');
+  const pluralName = parsePluralName(name);
+  const utils_dir = parseUtilsDir(options.utils_dir);
 
   createModel(name, !options['no-timestamps']);
   createMigration(name, !options['no-timestamps']);
 
   if (options.seeder) createSeeder(name);
-  if (options.controller) createController(name);
-  if (options.router) createRouter(name);
+  if (options.controller) createController(name, pluralName, utils_dir);
+  if (options.router) createRouter(name, pluralName);
 } catch (error) {
   console.error(error);
 }
