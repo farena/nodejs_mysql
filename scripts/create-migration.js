@@ -31,7 +31,7 @@ module.exports = (name, timestamps = true) => {
 };
 `;
 
-  const fileName = `${moment().format('DDMMYYYYHHmmss')}-create-${name}-table.js`;
+  const fileName = `${moment().format('YYYYMMDDHHmmss')}-create-${name}-table.js`;
   const relPath = path.resolve(
     __dirname,
     `../app/migrations/${fileName}`,
