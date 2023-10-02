@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
-const CustomError = require('../functions/CustomError');
+const CustomError = require('../../domain/exceptions/CustomError');
 
-// nota: verificar token, hay que formatear las respuetas.
-// eslint-disable-next-line consistent-return
 const authMiddleware = async (req, res, next) => {
   try {
     let token = req.headers.authorization;
@@ -27,11 +25,6 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-const generateAccessToken = (user) =>
-  // expires after half and hour (1800 seconds = 300 minutes = 5 hours)
-  jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '18000s' });
-
 module.exports = {
   authMiddleware,
-  generateAccessToken,
 };

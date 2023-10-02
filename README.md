@@ -673,3 +673,139 @@ module.exports = {
    },
 }
 ```
+
+# HEXAGONAL ARCHITECTURE
+
+Also known as ports and adapters architecture, is a software design pattern that focuses on separating concerns and promoting modularity and scalability in an application. In JavaScript, you can implement this architecture by following these key principles:
+
+## Layers
+
+### Infrastructure Layer
+
+Here, you'll find code related to interacting with external elements like databases, web services, and other technologies. It also includes the implementation of ports and adapters to connect the domain with the infrastructure.
+
+### Application Layer
+This is where application-specific logic resides. This layer orchestrates the interaction between internal and external layers. It's where use cases and business rules are defined.
+
+### Domain Layer
+
+This layer contains the core business logic and domain entities. It should be independent of infrastructure and focuses on solving business problems.
+
+## Ports and Adapters
+
+This concept is not really used in Javascript due to the lack of Interfaces, the Ports are interfaces and the adaptes are implementations of those interfaces. In our case we just create the Adapters, for example: a repository for an entity, which will be in charge of save or retrieve data from the database.
+
+### Ports
+
+These are interfaces or contracts that define how interaction with the domain will occur. For example, you could have a port for a data repository specifying methods for saving and retrieving data.
+
+### Adapters
+
+These are concrete implementations of ports. Adapters enable the domain to interact with the infrastructure. For example, a database adapter would implement the methods defined in the data repository port using a specific database management system.
+
+## Dependency Injection
+
+Hexagonal architecture promotes dependency injection. This means that the internal layers (domain and application) should not depend on external layers (infrastructure). Instead, external layers should depend on internal layers. This is achieved through the definition of ports and adapters.
+
+## Single Responsibility Principle
+
+Each component should have a single responsibility. The domain handles business rules, the application handles application logic, and the infrastructure handles communication and storage-related tasks.
+
+## Testing
+
+Hexagonal architecture facilitates unit testing and the simulation of external components, as you can create fake adapters (mocks) to simulate interaction with the infrastructure during testing.
+
+## Communication
+
+The application and domain layers communicate with each other through the definition of ports. The infrastructure layer implements these ports to provide actual communication with databases, external services, etc.
+
+## Example
+
+```
+// Infrastructure/libs/PaymentGateway.js - Adapter 
+class PaymentGateway {
+  constructor() {
+    // Some initialization for the payment gateway
+  }
+
+  processPayment(amount) {
+    // Logic to process payment
+    console.log(`Payment processed for $${amount}`);
+  }
+} 
+
+
+// Application/Orders/OrderService.js - Dependent
+const Order = require('path/to/Order')
+
+class OrderService {
+  constructor(paymentGateway) { // Port
+    this.paymentGateway = paymentGateway;
+  }
+
+  placeOrder(orderData) {
+    // Business logic to handle the order
+    const order = new Order(orderData);
+    order.calculateDiscount(); // Execute bussiness logic
+
+    console.log(`Order placed for ${order.product}`);
+    
+    // Use the injected payment gateway to process the payment
+    this.paymentGateway.processPayment(order.amount);
+
+    return 'Thanks for your order'
+  }
+}
+
+// Domain/entities/Order.js
+class Order {
+  constructor({ product, amount, promo_code }) {
+    this.promo_code = promo_code;
+    this.product = product;
+    this.amount = amount;
+  }
+
+  calculateDiscount() {
+    if(this.promo_code) {
+      let discount = ... // logic to calculate discount
+
+      return discount;
+    }
+
+    return 0;
+  }
+}
+
+// Infrastructure/controllers/OrderController.js - Usage
+class OrderController {
+  constructor(orderService) {
+    this.orderService = orderService;
+  }
+
+  create(req, res, next) {
+    try {
+      const result = this.orderService.placeOrder({ 
+        product: req.body.product, 
+        amount: req.body.amount, 
+      });
+      
+      res.status(200).send(result)
+    } catch(error) {
+      next(error)
+    }
+  } 
+}
+
+// Infrastructure/injectors/OrderInjector.js - Dependency Injection
+const PaymentGateway = require('path/to/PaymentGateway')
+const OrderService = require('path/to/OrderService')
+const OrderController = require('path/to/OrderController')
+
+const paymentGateway = new PaymentGateway();
+const orderService = new OrderService(paymentGateway);
+const orderController = new OrderController(orderService);
+
+module.exports = {
+  orderController,
+}
+```

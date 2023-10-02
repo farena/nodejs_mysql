@@ -1,8 +1,8 @@
 require('dotenv').config(); // Required for environment variables
-require('./app/functions/utils');
+require('./app/infrastructure/libs/utils');
 
 // add CustomError to globals
-global.CustomError = require('./app/functions/CustomError');
+global.CustomError = require('./app/domain/exceptions/CustomError');
 
 const helmet = require('helmet');
 const express = require('express');
@@ -11,8 +11,8 @@ const compression = require('compression');
 const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const { cors } = require('./app/middlewares/cors');
-const { errorHandler } = require('./app/functions/errorHandler');
+const { cors } = require('./app/infrastructure/middlewares/cors');
+const { errorHandler } = require('./app/infrastructure/libs/errorHandler');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
