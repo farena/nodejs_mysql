@@ -1,8 +1,9 @@
+/* eslint-disable func-names */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-extend-native */
 
-Object.defineProperty(Object.prototype, 'getOnly', {
+Object.defineProperty(Object.prototype, "getOnly", {
   value(fields) {
     const obj = {};
     fields.forEach((x) => {
@@ -14,7 +15,7 @@ Object.defineProperty(Object.prototype, 'getOnly', {
     return obj;
   },
 });
-Object.defineProperty(Object.prototype, 'except', {
+Object.defineProperty(Object.prototype, "except", {
   value(fields) {
     const obj = JSON.parse(JSON.stringify(this));
 
@@ -47,14 +48,17 @@ Array.prototype.groupBy = function (key) {
     return objectsByKeyValue;
   }, {});
 };
-Array.prototype.sortBy = function (attr, dir = 'asc') {
-  return this.sort((a, b) => ((dir === 'asc' ? a[attr] > b[attr] : a[attr] < b[attr]) ? 1 : -1));
+Array.prototype.sortBy = function (attr, dir = "asc") {
+  return this.sort((a, b) =>
+    (dir === "asc" ? a[attr] > b[attr] : a[attr] < b[attr]) ? 1 : -1
+  );
 };
 
 String.prototype.ucwords = function () {
   const str = this.toLowerCase();
   return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, (s) =>
-    s.toUpperCase());
+    s.toUpperCase()
+  );
 };
 String.prototype.capitalize = function () {
   const str = this.toLowerCase();

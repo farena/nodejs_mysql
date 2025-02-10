@@ -3,5 +3,5 @@ const UpdateUserProfile = require('./UpdateUserProfile');
 
 module.exports = {
   LoginUser,
-  UpdateUserProfile
-}
+  UpdateUserProfile,
+};

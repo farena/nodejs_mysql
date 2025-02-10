@@ -1,6 +1,6 @@
-const hs = require('handlebars');
-const nodemailer = require('nodemailer');
-const config = require('../config/config');
+const hs = require("handlebars");
+const nodemailer = require("nodemailer");
+const config = require("../../config/config");
 
 /**
  * USAGE EXAMPLE:

@@ -7,8 +7,7 @@ const routes = [];
 // Initializing routes
 fs.readdirSync(__dirname)
   .filter(
-    (file) =>
-      file.indexOf('.') !== 0 &&
+    (file) => file.indexOf('.') !== 0 &&
       file !== basename &&
       file.slice(-9) === 'router.js',
   )

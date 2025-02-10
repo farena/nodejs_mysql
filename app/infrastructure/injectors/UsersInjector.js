@@ -1,9 +1,9 @@
-const validator = require('../libs/validate')
-const jwt = require('../libs/jwt')
+const validator = require('../libs/validate');
+const jwt = require('../libs/jwt');
 const { usersRepository } = require('../repositories');
 const {
   LoginUser,
-  UpdateUserProfile
+  UpdateUserProfile,
 } = require('../../application/users');
 
 const UsersController = require('../controllers/UsersController');
@@ -12,7 +12,7 @@ const UsersController = require('../controllers/UsersController');
 const loginUser = new LoginUser({
   usersRepository,
   validator,
-  jwt
+  jwt,
 });
 const updateUserProfile = new UpdateUserProfile({
   usersRepository,
@@ -21,7 +21,7 @@ const updateUserProfile = new UpdateUserProfile({
 
 const usersController = new UsersController({
   loginUser,
-  updateUserProfile
+  updateUserProfile,
 });
 
 module.exports = {
