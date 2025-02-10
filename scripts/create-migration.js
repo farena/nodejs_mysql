@@ -12,7 +12,10 @@ module.exports = (name, timestamps = true) => {
         allowNull: false,
         primaryKey: true,
       },
-      // CREATE COLUMNS HERE${!timestamps ? '' : `
+      // CREATE COLUMNS HERE${
+        !timestamps
+          ? ''
+          : `
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -22,7 +25,8 @@ module.exports = (name, timestamps = true) => {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-      },`}
+      },`
+      }
     });
   },
   down: async (queryInterface) => {
@@ -31,13 +35,13 @@ module.exports = (name, timestamps = true) => {
 };
 `;
 
-  const fileName = `${moment().format('YYYYMMDDHHmmss')}-create-${name}-table.js`;
-  const relPath = path.resolve(
-    __dirname,
-    `../app/migrations/${fileName}`,
-  );
+  const fileName = `${moment().format(
+    'YYYYMMDDHHmmss',
+  )}-DDL-create-${name}-table.js`;
+  const relPath = path.resolve(__dirname, `../app/migrations/${fileName}`);
 
-  if (fs.existsSync(relPath)) throw new Error(`There is already a migration in path: ${relPath}`);
+  if (fs.existsSync(relPath))
+    throw new Error(`There is already a migration in path: ${relPath}`);
 
   fs.writeFile(relPath, template, (err) => {
     // In case of a error throw err.

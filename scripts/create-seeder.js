@@ -19,7 +19,8 @@ module.exports = (name) => {
 
   const relPath = path.resolve(__dirname, `../app/seeders/${name}.js`);
 
-  if (fs.existsSync(relPath)) throw new Error(`There is already a seeder in path: ${relPath}`);
+  if (fs.existsSync(relPath))
+    throw new Error(`There is already a seeder in path: ${relPath}`);
 
   fs.writeFile(relPath, template, (err) => {
     // In case of a error throw err.

@@ -11,7 +11,8 @@
     "start": "nodemon server.js",
     "lint": "eslint ./app",
     "lint-fix": "eslint ./app --fix",
-    "new-model": "node ./scripts/new-model.js"
+    "new-model": "node ./scripts/new-model.js",
+    "new-module": "node ./scripts/hexagonal/create-module.js"
   },
   "author": "Farena",
   "license": "ISC",
@@ -38,7 +39,8 @@
     "sequelize": "^6.29.0",
     "uuidv4": "^6.2.2",
     "validatorjs": "^3.22.1",
-    "yargs": "^17.6.2"
+    "yargs": "^17.6.2",
+    "yargs-interactive": "^3.0.1"
   },
   "devDependencies": {
     "eslint": "^7.5.0",
