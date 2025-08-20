@@ -2,8 +2,11 @@
 const yargsInteractive = require('yargs-interactive');
 const createApplication = require('./create-application');
 const createInfrastructure = require('./create-infrastructure');
-const parseName = require('./name-parser');
-const createRouter = require('../create-router');
+const { parseName, parseFields } = require('./helpers');
+const createModel = require('./create-model');
+const createMigration = require('./create-migration');
+const createSeeder = require('./create-seeder');
+const createRouter = require('./create-router');
 
 try {
   const options = {
@@ -56,6 +59,36 @@ try {
         return true;
       },
     },
+    with_model: {
+      type: 'confirm',
+      prompt: 'if-no-arg',
+      describe: 'Create a model for the module',
+      default: false,
+    },
+    fields: {
+      type: 'input',
+      prompt: 'if-no-arg',
+      describe: 'Enter the fields for the model',
+      default: '',
+    },
+    with_seeder: {
+      type: 'confirm',
+      prompt: 'if-no-arg',
+      describe: 'Create a seeder for the module',
+      default: false,
+    },
+    with_router: {
+      type: 'confirm',
+      prompt: 'if-no-arg',
+      describe: 'Create a router for the module',
+      default: false,
+    },
+    with_timestamps: {
+      type: 'confirm',
+      prompt: 'if-no-arg',
+      describe: 'Create timestamps for the model',
+      default: true,
+    },
   };
 
   yargsInteractive()
@@ -63,9 +96,17 @@ try {
     .interactive(options)
     .then(async (result) => {
       const nameVariants = parseName(result.name);
-      createApplication(nameVariants, result.use_cases);
-      createInfrastructure(nameVariants, result.use_cases);
-      createRouter(nameVariants, result.use_cases);
+      const fields = parseFields(result.fields);
+
+      createApplication(nameVariants, result.use_cases, fields);
+      createInfrastructure(nameVariants, result.use_cases, fields);
+
+      if (result.with_model) {
+        createModel(nameVariants, result.with_timestamps, fields);
+        createMigration(nameVariants, result.with_timestamps, fields);
+        if (result.with_seeder) createSeeder(nameVariants, fields);
+        if (result.with_router) createRouter(nameVariants, result.use_cases);
+      }
     });
 } catch (error) {
   console.error(error);

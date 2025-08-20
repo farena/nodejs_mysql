@@ -1,5 +1,8 @@
 module.exports = ({
-  singularSC, singularPC, singularCC, pluralCC,
+  singularSC,
+  singularPC,
+  singularCC,
+  pluralCC,
 }) => `class Show${singularPC} {
   constructor(${pluralCC}Repository) {
     this.$${pluralCC} = ${pluralCC}Repository;

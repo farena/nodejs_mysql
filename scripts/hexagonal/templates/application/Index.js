@@ -4,46 +4,46 @@ const createImports = (modules) => {
       return `const ${x.name} = require('./${x.name}');
 `;
     })
-    .join('');
+    .join("");
 };
 const createExports = (modules) => {
   return modules
     .map(
       (x) => `
-  ${x.name},`,
+  ${x.name},`
     )
-    .join('');
+    .join("");
 };
 
 module.exports = ({ pluralPC, singularPC }, use_cases) => {
   const modules = [
     {
       name: `Get${pluralPC}PaginableList`,
-      value: 'paginate',
+      value: "paginate",
     },
     {
       name: `Get${pluralPC}List`,
-      value: 'list',
+      value: "list",
     },
     {
       name: `Create${singularPC}`,
-      value: 'create',
+      value: "create",
     },
     {
       name: `Show${singularPC}`,
-      value: 'show',
+      value: "show",
     },
     {
       name: `Update${singularPC}`,
-      value: 'update',
+      value: "update",
     },
     {
       name: `Delete${singularPC}`,
-      value: 'delete',
+      value: "delete",
     },
     {
       name: `Validate${singularPC}Data`,
-      value: 'validate',
+      value: "validate",
     },
   ].filter((x) => use_cases.includes(x.value));
 

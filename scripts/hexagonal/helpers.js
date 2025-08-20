@@ -24,7 +24,7 @@ const nameToPascalCase = (pluralName) =>
     .map((x) => `${x[0].toUpperCase()}${x.slice(1)}`)
     .join('');
 
-module.exports = function parseName(name) {
+function parseName(name) {
   const normalized = normalizeName(name);
   const nameVariants = {
     singularSC: normalized,
@@ -36,4 +36,51 @@ module.exports = function parseName(name) {
   };
 
   return nameVariants;
+}
+
+// Function to validate field types
+function validateFieldType(type, enumValues = null) {
+  // Valid types for fields
+  const VALID_TYPES = [
+    'STRING',
+    'INTEGER',
+    'TEXT',
+    'BOOLEAN',
+    'DATE',
+    'DATEONLY',
+    'ENUM',
+  ];
+
+  if (!VALID_TYPES.includes(type)) {
+    throw new Error(
+      `Invalid type: ${type}. Valid types are: ${VALID_TYPES.join(', ')}`,
+    );
+  }
+
+  if (type === 'ENUM' && !enumValues) {
+    throw new Error('ENUM type requires values separated by commas');
+  }
+
+  return true;
+}
+
+// Function to parse fields string
+function parseFields(fieldsString) {
+  if (!fieldsString) return [];
+
+  return fieldsString.split(';').map((field) => {
+    const [name, type, enumValues] = field.split(':');
+    validateFieldType(type, enumValues);
+
+    return {
+      name,
+      type,
+      enumValues: type === 'ENUM' ? enumValues.split(',') : null,
+    };
+  });
+}
+
+module.exports = {
+  parseName,
+  parseFields,
 };

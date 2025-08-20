@@ -2,7 +2,7 @@ const createFunctions = (modules) => {
   return modules.map((x) => `${x.function}`).join('');
 };
 
-module.exports = ({ singularSC, pluralPC, pluralSC }, use_cases) => {
+module.exports = ({ singularSC, pluralPC, pluralSC }, use_cases, fields) => {
   const modules = [
     {
       value: 'paginate',
@@ -55,9 +55,9 @@ module.exports = ({ singularSC, pluralPC, pluralSC }, use_cases) => {
       value: 'create',
       function: `
 
-  async create({ column_1, column_2 }) {
+  async create({ ${fields.map((field) => field.name).join(', ')} }) {
     const ${singularSC} = await this.models.${singularSC}.create({
-      column_1, column_2,
+      ${fields.map((field) => field.name).join(',\n      ')},
     });
 
     return ${singularSC};
@@ -67,20 +67,18 @@ module.exports = ({ singularSC, pluralPC, pluralSC }, use_cases) => {
       value: 'update',
       function: `
 
-  async update({ ${singularSC}_id, column_1, column_2 }) {
+  async update({ ${singularSC}_id, ${fields.map((field) => field.name).join(', ')} }) {
     const ${singularSC} = await this.models.${singularSC}.findByPk(${singularSC}_id);
 
     if (!${singularSC}) throw new CustomError('${singularSC} not found', 404);
 
     await ${singularSC}.update({
-      column_1,
-      column_2,
+      ${fields.map((field) => field.name).join(',\n      ')},
     });
 
     return {
       ...${singularSC}.toJSON(),
-      column_1,
-      column_2,
+      ${fields.map((field) => field.name).join(',\n      ')},
     };
   }`,
     },
@@ -104,8 +102,7 @@ module.exports = ({ singularSC, pluralPC, pluralSC }, use_cases) => {
 
   return `const { Op } = require('sequelize');${
     withPaginate
-      ? `
-      const { paginate, paginatedResult } = require('../libs/paginable');
+      ? `const { paginate, paginatedResult } = require('../libs/paginable');
 `
       : ''
   }const CustomError = require('../../domain/exceptions/CustomError');

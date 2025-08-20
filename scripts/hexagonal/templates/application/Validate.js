@@ -1,4 +1,4 @@
-module.exports = ({ singularPC }) => `class Validate${singularPC}Data {
+module.exports = ({ singularPC }, fields) => `class Validate${singularPC}Data {
   constructor(Validator) {
     this.$validator = Validator;
   }
@@ -7,15 +7,15 @@ module.exports = ({ singularPC }) => `class Validate${singularPC}Data {
    * Using validatorJS.
    * For documentation: https://github.com/mikeerickson/validatorjs
    */
-  async execute({ column_1, column_2 }) {
+  async execute({ ${fields.map((field) => field.name).join(", ")} }) {
     await this.$validator({
-      column_1, column_2,
+      ${fields.map((field) => field.name).join(",\n      ")},
     }, {
-      column_1: 'required',
-      column_2: 'required',
+      ${fields.map((field) => `${field.name}: 'required'`).join(",\n      ")},
     }, {
-      'required.column_1': 'Column 1 is required',
-      'required.column_2': 'Column 2 is required',
+      ${fields
+        .map((field) => `'required.${field.name}': '${field.name} is required'`)
+        .join(",\n      ")},
     });
   }
 }

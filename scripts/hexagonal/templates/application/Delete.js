@@ -1,4 +1,8 @@
-module.exports = ({singularSC, singularPC, pluralCC}) => `class Delete${singularPC} {
+module.exports = ({
+  singularSC,
+  singularPC,
+  pluralCC,
+}) => `class Delete${singularPC} {
   constructor(${pluralCC}Repository) {
     this.$${pluralCC} = ${pluralCC}Repository;
   }

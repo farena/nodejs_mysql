@@ -1,4 +1,4 @@
-module.exports = ({pluralPC, pluralCC}) => `class Get${pluralPC}List {
+module.exports = ({ pluralPC, pluralCC }) => `class Get${pluralPC}List {
   constructor(${pluralCC}Repository) {
     this.$${pluralCC} = ${pluralCC}Repository;
   }

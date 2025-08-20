@@ -9,14 +9,23 @@ const createInjection = (modules) => {
 
 const createCases = (modules) => {
   return modules
-    .map(
-      (x) => `
-    this.${x.case} = ${x.case};`,
-    )
+    .map((x) => {
+      if (Array.isArray(x.case)) {
+        return x.case
+          .map(
+            (y) => `
+    this.${y} = ${y};`,
+          )
+          .join('\n    ');
+      }
+
+      return `
+    this.${x.case} = ${x.case};`;
+    })
     .join('');
 };
 
-const createFunctions = (modules) => {
+const createFunctions = (use_cases, modules) => {
   return modules
     .map((x) => {
       return `
@@ -26,10 +35,37 @@ const createFunctions = (modules) => {
 };
 
 module.exports = (
-  { singularSC, pluralPC, pluralCC, singularPC },
+  { pluralPC, pluralCC, singularPC, singularSC },
   use_cases,
+  fields,
 ) => {
   const modules = [
+    {
+      value: 'paginate_list',
+      case: [`get${pluralPC}PaginableList`, `get${pluralPC}List`],
+      function: `async index({ query }, res, next) {
+    try {
+      const { page, per_page, sort_by, sort_dir, paginate, ...filters } = query;
+      const pagerOpts = { page, per_page, sort_by, sort_dir };
+
+      let result;
+      if(paginate) {
+        result = await this.get${pluralPC}PaginableList.execute({
+          pagerOpts,
+          filters,
+        });
+      } else {
+        result = await this.get${pluralPC}List.execute();
+      }
+
+      res.status(200).send(getResponseCustom(200, result));
+      res.end();
+    } catch (error) {
+      next(error);
+    }
+  }
+`,
+    },
     {
       value: 'paginate',
       case: `get${pluralPC}PaginableList`,
@@ -54,7 +90,7 @@ module.exports = (
     {
       value: 'list',
       case: `get${pluralPC}List`,
-      function: `async list(req, res, next) {
+      function: `async index(req, res, next) {
     try {
       const result = await this.get${pluralPC}List.execute();
 
@@ -90,11 +126,10 @@ module.exports = (
       case: `create${singularPC}`,
       function: `async create(req, res, next) {
     try {
-      const { column_1, column_2 } = req.body;
+      const { ${fields.map((field) => field.name).join(', ')} } = req.body;
 
       const result = await this.create${singularPC}.execute({
-        column_1,
-        column_2,
+        ${fields.map((field) => field.name).join(',\n      ')},
       });
 
       res.status(200).send(getResponseCustom(200, result));
@@ -111,12 +146,11 @@ module.exports = (
       function: `async update(req, res, next) {
     try {
       const { ${singularSC}_id } = req.params;
-      const { column_1, column_2 } = req.body;
+      const { ${fields.map((field) => field.name).join(', ')} } = req.body;
 
       const result = await this.update${singularPC}.execute({
         ${singularSC}_id,
-        column_1,
-        column_2,
+        ${fields.map((field) => field.name).join(',\n      ')},
       });
 
       res.status(200).send(getResponseCustom(200, result));
@@ -146,7 +180,18 @@ module.exports = (
   }
 `,
     },
-  ].filter((x) => use_cases.includes(x.value));
+  ].filter((x) => {
+    const hasPagList =
+      use_cases.includes('paginate') && use_cases.includes('list');
+
+    if (hasPagList) {
+      if (x.value === 'paginate_list') return true;
+      if (x.value === 'paginate') return false;
+      if (x.value === 'list') return false;
+    }
+
+    return use_cases.includes(x.value);
+  });
 
   return `const { getResponseCustom } = require('../libs/serviceUtil');
 
@@ -155,7 +200,7 @@ class ${pluralPC}Controller {
   }) {
     this.name = '${pluralCC}Controller';${createCases(modules)}
   }
-${createFunctions(modules)}
+${createFunctions(use_cases, modules)}
 }
 
 module.exports = ${pluralPC}Controller;

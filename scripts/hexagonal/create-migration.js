@@ -1,22 +1,33 @@
-const fs = require('fs');
-const path = require('path');
-const moment = require('moment');
+/* eslint-disable no-console */
+const fs = require("fs");
+const path = require("path");
+const moment = require("moment");
 
-module.exports = (name, timestamps = true) => {
+module.exports = ({ singularSC }, timestamps = true, fields = []) => {
   const template = `module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable('${name}', {
-      ${name}_id: {
+    await queryInterface.createTable('${singularSC}', {
+      ${singularSC}_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true,
       },
-      // CREATE COLUMNS HERE${
-        !timestamps
-          ? ''
-          : `
-      created_at: {
+      ${fields
+        .map(
+          (field) => `${field.name}: {
+        type: DataTypes.${field.type}${
+            field.type === "ENUM"
+              ? `(['${field.enumValues.join("', '")}'])`
+              : ""
+          },
+      },`
+        )
+        .join("\n      ")}
+        ${
+          !timestamps
+            ? ""
+            : `created_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.literal('CURRENT_TIMESTAMP'),
@@ -26,19 +37,19 @@ module.exports = (name, timestamps = true) => {
         allowNull: false,
         defaultValue: DataTypes.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },`
-      }
+        }
     });
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('${name}');
+    await queryInterface.dropTable('${singularSC}');
   },
 };
 `;
 
   const fileName = `${moment().format(
-    'YYYYMMDDHHmmss',
-  )}-DDL-create-${name}-table.js`;
-  const relPath = path.resolve(__dirname, `../app/migrations/${fileName}`);
+    "YYYYMMDDHHmmss"
+  )}-DDL-create-${singularSC}-table.js`;
+  const relPath = path.resolve(__dirname, `../../app/migrations/${fileName}`);
 
   if (fs.existsSync(relPath))
     throw new Error(`There is already a migration in path: ${relPath}`);
