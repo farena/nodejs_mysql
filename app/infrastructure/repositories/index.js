@@ -1,6 +1,7 @@
-const models = require('../../models');
-const UsersRepository = require('./UserRepository');
+const TransactionRepository = require("./_db_transaction.repository");
+const UsersRepository = require("./users.repository");
 
 module.exports = {
-  usersRepository: new UsersRepository(models),
+  TransactionRepository,
+  UsersRepository,
 };

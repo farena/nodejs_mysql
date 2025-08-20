@@ -1,45 +1,51 @@
-require('dotenv').config(); // Required for environment variables
-require('./app/infrastructure/libs/utils');
+require("dotenv").config(); // Required for environment variables
+require("./app/infrastructure/libs/utils");
 
 // add CustomError to globals
-global.CustomError = require('./app/domain/exceptions/CustomError');
+global.CustomError = require("./app/domain/exceptions/CustomError");
 
-const helmet = require('helmet');
-const express = require('express');
-const compression = require('compression');
+const helmet = require("helmet");
+const express = require("express");
+const compression = require("compression");
 
 const app = express();
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const { cors } = require('./app/infrastructure/middlewares/cors');
-const { errorHandler } = require('./app/infrastructure/libs/errorHandler');
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const { cors } = require("./app/infrastructure/middlewares/cors.middleware");
+const { errorHandler } = require("./app/infrastructure/libs/errorHandler");
+const domainMiddleware = require("./app/infrastructure/middlewares/domain.middleware");
 
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(compression());
 app.use(helmet()); // Add Helmet as a middleware
 app.use(cors); // add cors as middleware
+app.options("*", (req, res) => {
+  res.status(204).end();
+});
+app.use(domainMiddleware);
 
 // Add Routes and tasks
-const routes = require('./app/routes/index');
+const routes = require("./app/routes/index");
 
 routes.map((x) => app.use(x.basePath, x.router));
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // Main errorHandler
-app.use((err, req, res, next) => { errorHandler(err, req, res, next); });
+app.use((err, req, res, next) => {
+  errorHandler(err, req, res, next);
+});
 
 // assume 404 since no middleware responded
 app.use((req, res) => {
-  res.status(404)
-    .json({
-      code: 404,
-      message: 'Not found',
-      success: false,
-      data: [],
-    });
+  res.status(404).json({
+    code: 404,
+    message: "Not found",
+    success: false,
+    data: [],
+  });
 });
 
 const server = app.listen(process.env.PORT || 3000, () => {

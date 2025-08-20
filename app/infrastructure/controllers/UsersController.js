@@ -1,8 +1,8 @@
-const response = require('../libs/serviceUtil');
+const response = require("../libs/serviceUtil");
 
 class UsersController {
   constructor({ loginUser, updateUserProfile }) {
-    this.name = 'UsersController';
+    this.name = "UsersController";
     this.loginUser = loginUser;
     this.updateUserProfile = updateUserProfile;
   }
