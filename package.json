@@ -5,14 +5,15 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "npx sequelize-cli db:migrate",
-    "migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "migrate": "node ./scripts/run-migrations.js",
+    "migrate:undo": "node ./scripts/run-migrations.js --undo=1",
+    "migrate:all": "node ./scripts/run-migrations.js --domain='All (Not test)'",
     "seed": "npx sequelize-cli db:seed:all",
     "start": "nodemon server.js",
     "lint": "eslint ./app",
     "lint-fix": "eslint ./app --fix",
-    "new-model": "node ./scripts/new-model.js",
-    "new-module": "node ./scripts/hexagonal/create-module.js"
+    "new-module": "node ./scripts/hexagonal/create-module.js",
+    "update-system-data": "node ./scripts/run-seeders.js --domain='All (Not test)' --name='System Data'"
   },
   "author": "Farena",
   "license": "ISC",
