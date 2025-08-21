@@ -44,11 +44,9 @@ router.get(
   (req, res, next) =>
     req.controllers.usersController.reSendActivationEmail(req, res, next)
 );
-router.put(
-  "/profile",
-  [authMiddleware, routeACL("profile.update")],
-  (req, res, next) =>
-    req.controllers.usersController.updateProfile(req, res, next)
+
+router.put("/profile", [authMiddleware], (req, res, next) =>
+  req.controllers.usersController.updateProfile(req, res, next)
 );
 
 router.post("/users/:verification_code/verify", (req, res, next) =>
