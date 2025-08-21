@@ -14,7 +14,7 @@ class UpdateUserProfile {
     await this.$validator.execute({
       new_password,
       new_password_confirmation,
-      type: "profileUpdate",
+      type: 'profileUpdate',
     });
 
     const user = await this.$user.getUserById({ user_id });
@@ -29,7 +29,7 @@ class UpdateUserProfile {
       password: new_password,
     });
 
-    return "Profile updated succesfully";
+    return 'Profile updated succesfully';
   }
 }
 

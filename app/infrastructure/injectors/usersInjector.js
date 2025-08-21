@@ -1,101 +1,104 @@
 const validate = require("../libs/validate");
 const {
   UsersRepository,
-  // TransactionRepository
+  TransactionRepository,
+  MailerRepository,
 } = require("../repositories");
 const {
-  LoginUser,
+  VerifyUser,
+  CreateUser,
+  DeactivateUser,
+  ActivateUser,
+  GetUsersList,
+  ResendActivationEmail,
+  ShowUser,
+  SignInUser,
+  RefreshToken,
+  UpdateUser,
   UpdateUserProfile,
-  // VerifyUser,
-  // CreateUser,
-  // DeactivateUser,
-  // ActivateUser,
-  // GetUsersList,
-  // ResendActivationEmail,
-  // ShowUser,
-  // RefreshToken,
-  // UpdateUser,
-  // ValidateUserData,
-  // SendPasswordReset,
-  // ResetUserPassword,
-  // GetUsersPaginableList,
+  ValidateUserData,
+  SendPasswordReset,
+  ResetUserPassword,
+  GetUsersPaginableList,
 } = require("../../application/users");
 const UsersController = require("../controllers/UsersController");
+const UsersHelper = require("../../domain/helpers/users.helper");
 
 module.exports = function registerController({
   models,
-  // mailer,
+  mailer,
   jwt,
-  // settings,
+  settings,
 }) {
   const usersRepository = new UsersRepository(models);
-  // const transactionsRepository = new TransactionRepository(models);
-  // const mailerRepository = new MailerRepository(mailer, models);
+  const transactionsRepository = new TransactionRepository(models);
+  const mailerRepository = new MailerRepository(mailer, models);
 
-  // const validateUserData = new ValidateUserData(validate);
+  const validateUserData = new ValidateUserData(validate);
 
-  // const verifyUser = new VerifyUser(usersRepository, validateUserData);
-  // const createUser = new CreateUser(
-  //   usersRepository,
-  //   transactionsRepository,
-  //   mailerRepository,
-  //   validateUserData,
-  //   settings
-  // );
-  // const activateUser = new ActivateUser(usersRepository);
-  // const deactivateUser = new DeactivateUser(usersRepository);
-  // const getUsersList = new GetUsersList(usersRepository);
-  // const getUsersPaginableList = new GetUsersPaginableList(usersRepository);
-  // const resendActivationEmail = new ResendActivationEmail(
-  //   usersRepository,
-  //   mailerRepository,
-  //   settings
-  // );
-  // const showUser = new ShowUser(usersRepository);
-  const loginUser = new LoginUser({
+  const verifyUser = new VerifyUser(usersRepository, validateUserData);
+  const createUser = new CreateUser(
     usersRepository,
-    validator: validate,
+    transactionsRepository,
+    mailerRepository,
+    validateUserData,
+    settings
+  );
+  const activateUser = new ActivateUser(usersRepository);
+  const deactivateUser = new DeactivateUser(usersRepository);
+  const getUsersList = new GetUsersList(usersRepository);
+  const getUsersPaginableList = new GetUsersPaginableList(usersRepository);
+  const resendActivationEmail = new ResendActivationEmail(
+    usersRepository,
+    mailerRepository,
+    settings
+  );
+  const showUser = new ShowUser(usersRepository);
+
+  const signInUser = new SignInUser(
+    usersRepository,
+    UsersHelper,
     jwt,
-  });
-  // const loginUser = new LoginUser(usersRepository, UsersHelper, jwt, settings);
-  // const refreshToken = new RefreshToken(
-  //   usersRepository,
-  //   UsersHelper,
-  //   jwt,
-  //   settings
-  // );
-  // const updateUser = new UpdateUser(
-  //   usersRepository,
-  //   filesRepository,
-  //   transactionsRepository,
-  //   validateUserData
-  // );
-  const updateUserProfile = new UpdateUserProfile({
+    settings
+  );
+  const refreshToken = new RefreshToken(
     usersRepository,
-    validator: validate,
-  });
-  // const sendPasswordReset = new SendPasswordReset(
-  //   usersRepository,
-  //   mailerRepository,
-  //   settings
-  // );
-  // const resetUserPassword = new ResetUserPassword(usersRepository, validate);
+    UsersHelper,
+    jwt,
+    settings
+  );
+  const updateUser = new UpdateUser(
+    usersRepository,
+    transactionsRepository,
+    validateUserData
+  );
+  const updateUserProfile = new UpdateUserProfile(
+    usersRepository,
+    validateUserData,
+    UsersHelper
+  );
+  const sendPasswordReset = new SendPasswordReset(
+    usersRepository,
+    mailerRepository,
+    settings
+  );
+  const resetUserPassword = new ResetUserPassword(usersRepository, validate);
 
   return new UsersController({
-    loginUser,
+    verifyUser,
+    createUser,
+    activateUser,
+    deactivateUser,
+    getUsersList,
+    getUsersPaginableList,
+    resendActivationEmail,
+    showUser,
+    signInUser,
+    refreshToken,
+    updateUser,
     updateUserProfile,
-    // verifyUser,
-    // createUser,
-    // activateUser,
-    // deactivateUser,
-    // getUsersList,
-    // getUsersPaginableList,
-    // resendActivationEmail,
-    // showUser,
-    // refreshToken,
-    // updateUser,
-    // validateUserData,
-    // sendPasswordReset,
-    // resetUserPassword,
+    validateUserData,
+    sendPasswordReset,
+    resetUserPassword,
   });
 };
