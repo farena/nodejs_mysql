@@ -1,5 +1,5 @@
 const xl = require('excel4node');
-const { uuid } = require('uuidv4');
+const { v4: uuid } = require('uuid');
 const fileSystem = require('./fileSystem');
 
 const generateSheet = async (sheetData, wb, options, index) => {

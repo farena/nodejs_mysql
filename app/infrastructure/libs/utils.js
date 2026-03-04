@@ -1,6 +1,5 @@
 /* eslint-disable func-names */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-prototype-builtins */
+
 /* eslint-disable no-extend-native */
 
 Object.defineProperty(Object.prototype, "getOnly", {
@@ -43,7 +42,7 @@ Array.prototype.flatMap = function (callback, depth = null) {
 Array.prototype.groupBy = function (key) {
   return this.reduce((objectsByKeyValue, obj) => {
     const value = obj[key];
-    // eslint-disable-next-line no-param-reassign
+
     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
     return objectsByKeyValue;
   }, {});

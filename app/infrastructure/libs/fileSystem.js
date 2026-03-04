@@ -1,7 +1,7 @@
 /* eslint-disable no-async-promise-executor */
 const fs = require('fs-extra');
 const path = require('path');
-const { uuid } = require('uuidv4');
+const { v4: uuid } = require('uuid');
 const axios = require('axios');
 
 module.exports = {

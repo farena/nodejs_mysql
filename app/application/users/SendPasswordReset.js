@@ -1,4 +1,4 @@
-const { uuid: v4 } = require("uuidv4");
+const { v4 } = require("uuid");
 
 class SendPasswordReset {
   constructor(usersRepository, mailerRepository, settings) {
