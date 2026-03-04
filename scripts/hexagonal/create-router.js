@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
   const modules = [
     {
-      value: "paginate_list",
+      value: 'paginate_list',
       template: `router.get(
   '/',
   [
@@ -16,7 +16,7 @@ module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
 );`,
     },
     {
-      value: "create",
+      value: 'create',
       template: `router.post(
   '/',
   [
@@ -27,7 +27,7 @@ module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
 );`,
     },
     {
-      value: "show",
+      value: 'show',
       template: `router.get(
   '/:${singularSC}_id',
   [
@@ -38,7 +38,7 @@ module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
 );`,
     },
     {
-      value: "update",
+      value: 'update',
       template: `router.put(
   '/:${singularSC}_id',
   [
@@ -49,7 +49,7 @@ module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
 );`,
     },
     {
-      value: "delete",
+      value: 'delete',
       template: `router.delete(
   '/:${singularSC}_id',
   [
@@ -59,12 +59,34 @@ module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
   (req, res, next) => req.controllers.${pluralCC}Controller.delete(req, res, next),
 );`,
     },
+    {
+      value: 'soft_delete',
+      template: `router.put(
+  '/:${singularSC}_id/deactivate',
+  [
+    authMiddleware,
+    routeACL('${pluralSC}.deactivate'),
+  ],
+  (req, res, next) => req.controllers.${pluralCC}Controller.deactivate(req, res, next),
+);`,
+    },
+    {
+      value: 'soft_delete',
+      template: `router.put(
+  '/:${singularSC}_id/activate',
+  [
+    authMiddleware,
+    routeACL('${pluralSC}.activate'),
+  ],
+  (req, res, next) => req.controllers.${pluralCC}Controller.activate(req, res, next),
+);`,
+    },
   ].filter((x) => {
     const hasPagList =
-      use_cases.includes("paginate") || use_cases.includes("list");
+      use_cases.includes('paginate') || use_cases.includes('list');
 
     if (hasPagList) {
-      if (x.value === "paginate_list") return true;
+      if (x.value === 'paginate_list') return true;
     }
 
     return use_cases.includes(x.value);
@@ -73,10 +95,10 @@ module.exports = ({ pluralSC, pluralCC, singularSC }, use_cases) => {
   const template = `const express = require('express');
 
 const router = express.Router();
-const { authMiddleware } = require("../infrastructure/middlewares/auth.middleware");
-const { routeACL } = require("../infrastructure/middlewares/acl.middleware");
+const authMiddleware  = require("../infrastructure/middlewares/auth.middleware");
+const routeACL = require("../infrastructure/middlewares/acl.middleware");
 
-${modules.map((x) => x.template).join("\n\n")}
+${modules.map((x) => x.template).join('\n\n')}
 
 module.exports = {
   basePath: '/${pluralSC}',
@@ -86,7 +108,7 @@ module.exports = {
 
   const relPath = path.resolve(
     __dirname,
-    `../../app/routes/${pluralSC}.router.js`
+    `../../app/routes/${pluralSC}.router.js`,
   );
 
   if (fs.existsSync(relPath))

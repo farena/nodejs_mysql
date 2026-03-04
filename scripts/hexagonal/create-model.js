@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 module.exports = (
   { singularPC, singularSC },
   timestamps = true,
-  fields = []
+  fields = [],
+  soft_delete = false,
 ) => {
   const template = `const { Model } = require('sequelize');
 
@@ -27,13 +28,21 @@ module.exports = (sequelize, DataTypes) => {
         .map(
           (field) => `${field.name}: {
         type: DataTypes.${field.type}${
-            field.type === "ENUM"
+            field.type === 'ENUM'
               ? `(['${field.enumValues.join("', '")}'])`
-              : ""
+              : ''
           },
-      },`
+      },`,
         )
-        .join("\n      ")}
+        .join('\n      ')}${
+    soft_delete
+      ? `
+      deleted_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },`
+      : ''
+  }
     },
     {
       sequelize,
@@ -41,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     !timestamps
       ? `
       timestamps: false,`
-      : ""
+      : ''
   }
     },
   );
@@ -51,8 +60,8 @@ module.exports = (sequelize, DataTypes) => {
 
   const relPath = path.join(
     __dirname,
-    "../../app/models",
-    `${singularSC}.model.js`
+    '../../app/models',
+    `${singularSC}.model.js`,
   );
 
   if (fs.existsSync(relPath))

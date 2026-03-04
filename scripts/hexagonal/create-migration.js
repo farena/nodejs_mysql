@@ -1,9 +1,14 @@
 /* eslint-disable no-console */
-const fs = require("fs");
-const path = require("path");
-const moment = require("moment");
+const fs = require('fs');
+const path = require('path');
+const moment = require('moment');
 
-module.exports = ({ singularSC }, timestamps = true, fields = []) => {
+module.exports = (
+  { singularSC },
+  timestamps = true,
+  fields = [],
+  soft_delete = false,
+) => {
   const template = `module.exports = {
   up: async (queryInterface, DataTypes) => {
     await queryInterface.createTable('${singularSC}', {
@@ -17,17 +22,24 @@ module.exports = ({ singularSC }, timestamps = true, fields = []) => {
         .map(
           (field) => `${field.name}: {
         type: DataTypes.${field.type}${
-            field.type === "ENUM"
+            field.type === 'ENUM'
               ? `(['${field.enumValues.join("', '")}'])`
-              : ""
+              : ''
           },
-      },`
+      },`,
         )
-        .join("\n      ")}
-        ${
-          !timestamps
-            ? ""
-            : `created_at: {
+        .join('\n      ')}${
+    soft_delete
+      ? `
+      deleted_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },\n`
+      : ''
+  }${
+    !timestamps
+      ? ''
+      : `      created_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.literal('CURRENT_TIMESTAMP'),
@@ -37,7 +49,7 @@ module.exports = ({ singularSC }, timestamps = true, fields = []) => {
         allowNull: false,
         defaultValue: DataTypes.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
       },`
-        }
+  }
     });
   },
   down: async (queryInterface) => {
@@ -47,7 +59,7 @@ module.exports = ({ singularSC }, timestamps = true, fields = []) => {
 `;
 
   const fileName = `${moment().format(
-    "YYYYMMDDHHmmss"
+    'YYYYMMDDHHmmss',
   )}-DDL-create-${singularSC}-table.js`;
   const relPath = path.resolve(__dirname, `../../app/migrations/${fileName}`);
 

@@ -50,6 +50,10 @@ try {
           value: 'delete',
         },
         {
+          name: 'Soft Delete',
+          value: 'soft_delete',
+        },
+        {
           name: 'Validate',
           value: 'validate',
         },
@@ -81,7 +85,7 @@ try {
       type: 'confirm',
       prompt: 'if-no-arg',
       describe: 'Create a router for the module',
-      default: false,
+      default: true,
     },
     with_timestamps: {
       type: 'confirm',
@@ -97,13 +101,19 @@ try {
     .then(async (result) => {
       const nameVariants = parseName(result.name);
       const fields = parseFields(result.fields);
+      const soft_delete = result.use_cases.includes('soft_delete');
 
       createApplication(nameVariants, result.use_cases, fields);
       createInfrastructure(nameVariants, result.use_cases, fields);
 
       if (result.with_model) {
-        createModel(nameVariants, result.with_timestamps, fields);
-        createMigration(nameVariants, result.with_timestamps, fields);
+        createModel(nameVariants, result.with_timestamps, fields, soft_delete);
+        createMigration(
+          nameVariants,
+          result.with_timestamps,
+          fields,
+          soft_delete,
+        );
         if (result.with_seeder) createSeeder(nameVariants, fields);
         if (result.with_router) createRouter(nameVariants, result.use_cases);
       }

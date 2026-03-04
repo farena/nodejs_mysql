@@ -25,7 +25,7 @@ const createCases = (modules) => {
     .join('');
 };
 
-const createFunctions = (use_cases, modules) => {
+const createFunctions = (modules) => {
   return modules
     .map((x) => {
       return `
@@ -45,11 +45,11 @@ module.exports = (
       case: [`get${pluralPC}PaginableList`, `get${pluralPC}List`],
       function: `async index({ query }, res, next) {
     try {
-      const { page, per_page, sort_by, sort_dir, paginate, ...filters } = query;
+      const { page, per_page, sort_by, sort_dir, list, ...filters } = query;
       const pagerOpts = { page, per_page, sort_by, sort_dir };
 
       let result;
-      if(paginate) {
+      if(!list) {
         result = await this.get${pluralPC}PaginableList.execute({
           pagerOpts,
           filters,
@@ -180,6 +180,44 @@ module.exports = (
   }
 `,
     },
+    {
+      value: 'soft_delete',
+      case: `deactivate${singularPC}`,
+      function: `async deactivate(req, res, next) {
+    try {
+      const { ${singularSC}_id } = req.params;
+
+      const result = await this.deactivate${singularPC}.execute({
+        ${singularSC}_id,
+      });
+
+      res.status(200).send(getResponseCustom(200, result));
+      res.end();
+    } catch (error) {
+      next(error);
+    }
+  }
+`,
+    },
+    {
+      value: 'soft_delete',
+      case: `activate${singularPC}`,
+      function: `async activate(req, res, next) {
+    try {
+      const { ${singularSC}_id } = req.params;
+
+      const result = await this.activate${singularPC}.execute({
+        ${singularSC}_id,
+      });
+
+      res.status(200).send(getResponseCustom(200, result));
+      res.end();
+    } catch (error) {
+      next(error);
+    }
+  }
+`,
+    },
   ].filter((x) => {
     const hasPagList =
       use_cases.includes('paginate') && use_cases.includes('list');
@@ -200,7 +238,7 @@ class ${pluralPC}Controller {
   }) {
     this.name = '${pluralCC}Controller';${createCases(modules)}
   }
-${createFunctions(use_cases, modules)}
+${createFunctions(modules)}
 }
 
 module.exports = ${pluralPC}Controller;

@@ -96,6 +96,27 @@ module.exports = ({ singularPC, pluralCC, pluralPC, pluralSC }, use_cases) => {
   const validate${singularPC}Data = new Validate${singularPC}Data(validate);`,
       instance_order: 1,
     },
+    {
+      value: 'soft_delete',
+      import: `
+  Deactivate${singularPC},`,
+      instance: `
+  const deactivate${singularPC} = new Deactivate${singularPC}(${pluralCC}Repository);`,
+      instance_order: 8,
+      injection: `
+    deactivate${singularPC},`,
+    },
+
+    {
+      value: 'soft_delete',
+      import: `
+  Activate${singularPC},`,
+      instance: `
+  const activate${singularPC} = new Activate${singularPC}(${pluralCC}Repository);`,
+      instance_order: 9,
+      injection: `
+    activate${singularPC},`,
+    },
   ].filter((x) => use_cases.includes(x.value));
 
   return `${importValidator(
