@@ -1,5 +1,6 @@
 const { Model } = require("sequelize");
-const fullTextSearch = require("../infrastructure/libs/fullTextSearch.js");
+const bcrypt = require("bcrypt");
+const fullTextSearch = require("../infrastructure/libs/fullTextSearch");
 
 // Search Columns
 const searchColumns = ["first_name", "last_name", "email"];

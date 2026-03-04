@@ -1,9 +1,9 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const CustomError = require("../exceptions/CustomError");
 const {
   endpoints: EPData,
 } = require("../../../_initial_database/__endpoint_data");
-const PERMData = require("../../../_initial_database/__permission_data");
+// const PERMData = require("../../../_initial_database/__permission_data.js");
 
 class UsersHelper {
   static async parseAuthenticatedResponse({ user, jwt, settings }) {
@@ -20,7 +20,7 @@ class UsersHelper {
         name: user.role.name,
       },
       functionalities: UsersHelper.parseFunctionalities(user.role),
-      permissions: UsersHelper.parsePermissions(user.role),
+      // permissions: UsersHelper.parsePermissions(user.role),
     };
 
     return {
@@ -38,7 +38,7 @@ class UsersHelper {
           name: user.role.name,
         },
         endpoints: UsersHelper.createEndpointsString(user.role),
-        permissions: UsersHelper.createPermissionsString(user.role),
+        // permissions: UsersHelper.createPermissionsString(user.role),
       }),
       refresh_token: jwt.generateRefreshToken({
         user_id: user.user_id,
@@ -59,29 +59,29 @@ class UsersHelper {
     return functionalities;
   }
 
-  static parsePermissions(role) {
-    const permissions = {};
+  // static parsePermissions(role) {
+  //   const permissions = {};
 
-    role.permissions.forEach((perm) => {
-      permissions[perm.permission_id] = true;
-    });
+  //   role.permissions.forEach((perm) => {
+  //     permissions[perm.permission_id] = true;
+  //   });
 
-    return permissions;
-  }
+  //   return permissions;
+  // }
 
-  static createPermissionsString(role) {
-    const lastPERMID = [...PERMData].pop().permission_id;
+  // static createPermissionsString(role) {
+  //   const lastPERMID = [...PERMData].pop().permission_id;
 
-    // Create Array with all zeros with length == lastPERMID
-    const perms = [...Array(lastPERMID).keys()].map(() => 0);
+  //   // Create Array with all zeros with length == lastPERMID
+  //   const perms = [...Array(lastPERMID).keys()].map(() => 0);
 
-    // Set authorized PERM Ids to 1 in the STR
-    for (const perm of role.permissions) {
-      perms[perm.permission_id - 1] = 1;
-    }
+  //   // Set authorized PERM Ids to 1 in the STR
+  //   for (const perm of role.permissions) {
+  //     perms[perm.permission_id - 1] = 1;
+  //   }
 
-    return perms.join("");
-  }
+  //   return perms.join("");
+  // }
 
   static createEndpointsString(role) {
     const lastEPID = [...EPData].pop().endpoint_id;

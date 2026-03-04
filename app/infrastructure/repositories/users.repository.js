@@ -1,5 +1,4 @@
-const { Op } = require("sequelize");
-const { v4: uuid } = require("uuid");
+const { uuid } = require("uuidv4");
 const paginable = require("../libs/paginable");
 const CustomError = require("../../domain/exceptions/CustomError");
 

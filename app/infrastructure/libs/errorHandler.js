@@ -1,3 +1,6 @@
+const fs = require("fs");
+const CustomError = require("../../domain/exceptions/CustomError");
+
 module.exports = {
   errorHandler: (err, req, res, next) => {
     if (err.message && typeof err.message === "object") {
@@ -9,13 +12,9 @@ module.exports = {
       });
     }
 
-    // treat as 404
-    if (
-      err.message &&
-      // eslint-disable-next-line no-bitwise
-      (~err.message.indexOf("not found") ||
-        ~err.message.indexOf("Cast to ObjectId failed"))
-    ) {
+    // treat as 404 only when the error is actually a 404 (e.g. resource not found).
+    // Do not use message content: "No Token found" contains "not found" and would wrongly become 404.
+    if (err.code === 404 || err.status === 404) {
       return next();
     }
 

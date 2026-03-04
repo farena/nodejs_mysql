@@ -12,6 +12,7 @@ fs.readdirSync(__dirname)
       file.slice(-9) === 'router.js',
   )
   .forEach((file) => {
+    // eslint-disable-next-line global-require,import/no-dynamic-require
     const routeGroup = require(path.join(__dirname, file));
     routes.push(routeGroup);
   });

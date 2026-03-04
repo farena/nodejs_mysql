@@ -16,7 +16,7 @@ module.exports = {
 
     await queryInterface.bulkInsert(
       "role",
-      role.map(({ functionalities, ...role }) => role)
+      role.map(({ functionalities, ...roleData }) => roleData)
     );
     await queryInterface.bulkInsert("user", user);
 
