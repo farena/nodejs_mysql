@@ -1,3 +1,5 @@
+const CustomError = require("../../domain/exceptions/CustomError");
+
 class ResendActivationEmail {
   constructor(usersRepository, mailerRepository, settings) {
     this.$user = usersRepository;
@@ -9,6 +11,7 @@ class ResendActivationEmail {
     const user = await this.$user.getUserById({
       user_id,
     });
+    if (!user) throw new CustomError("User not found", 404);
 
     await this.$mailer.sendMail({
       to: user.email,

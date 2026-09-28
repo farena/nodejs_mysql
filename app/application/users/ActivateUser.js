@@ -9,6 +9,7 @@ class DeactivateUser {
     const user = await this.$user.getUserById({
       user_id,
     });
+    if (!user) throw new CustomError('User not found', 404);
     if (user.verification_code)
       throw new CustomError('User is not verified yet', 412);
 
