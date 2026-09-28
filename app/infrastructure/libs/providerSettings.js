@@ -89,11 +89,9 @@ module.exports = class ProviderSettings {
 
       const settings = {
         slug: "default",
-        // Base URL used to build links sent by email
-        domain: (process.env.FRONTEND_URL || process.env.BACKEND_URL || "").replace(
-          /\/$/,
-          ""
-        ),
+        // Frontend base URL, used to build the links sent by email
+        // (/activate_user, /reset_password are frontend routes)
+        domain: (process.env.FRONTEND_URL || "").replace(/\/$/, ""),
       };
 
       const instances = {
