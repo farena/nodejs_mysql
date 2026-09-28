@@ -42,24 +42,22 @@ module.exports =
     }
 
     const fields = columns.length ? columns.join(",") : searchColumns.join(",");
+    // Escape the term to prevent SQL injection through the search value
+    const against = sequelize.escape(fullTextWildcards(String(value)));
 
     return {
       attributes: {
         include: [
           [
             sequelize.literal(
-              `MATCH (${fields}) AGAINST('${fullTextWildcards(
-                value
-              )}' IN BOOLEAN MODE)`
+              `MATCH (${fields}) AGAINST(${against} IN BOOLEAN MODE)`
             ),
             "relevance_score",
           ],
         ],
       },
       where: sequelize.literal(
-        `MATCH (${fields}) AGAINST('${fullTextWildcards(
-          value
-        )}' IN BOOLEAN MODE) > 0`
+        `MATCH (${fields}) AGAINST(${against} IN BOOLEAN MODE) > 0`
       ),
     };
   };
