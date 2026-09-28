@@ -21,7 +21,7 @@ module.exports = class JWT {
   verifyAccessToken(token) {
     try {
       return jwt.verify(token, this.secret);
-    } catch (error) {
+    } catch {
       throw new CustomError('Token has expired', 401);
     }
   }
@@ -32,7 +32,7 @@ module.exports = class JWT {
     let payload;
     try {
       payload = jwt.verify(token, this.secret);
-    } catch (error) {
+    } catch {
       throw new CustomError('Refresh token is invalid or has expired', 401);
     }
 

@@ -17,7 +17,7 @@ const authMiddleware = async (req, res, next) => {
     let user;
     try {
       user = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    } catch (err) {
+    } catch {
       throw new CustomError("Token has expired", 401);
     }
 
