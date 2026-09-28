@@ -10,9 +10,10 @@ module.exports = (route) => async (req, res, next) => {
 
     if (!endpoint_id)
       throw new CustomError("ACL Error. Route name not found", 400);
-    if (!user.role_id) throw new CustomError("Unauthorized", 401);
+    const role_id = user?.role?.role_id;
+    if (!role_id) throw new CustomError("Unauthorized", 401);
 
-    const isAdmin = user.role_id === 1;
+    const isAdmin = role_id === 1;
     const endpointAuthorized = user.endpoints[endpoint_id - 1] === "1";
     if (!isAdmin && !endpointAuthorized)
       throw new CustomError("Unauthorized", 401);
