@@ -19,7 +19,7 @@ module.exports = {
     }
 
     if (err.name === "SequelizeUniqueConstraintError") {
-      return res.status(err.status || err.code || 500).json({
+      return res.status(412).json({
         code: 412,
         message: `The ${err.errors[0].path} "${err.errors[0].value}" is already in use`,
         success: false,
