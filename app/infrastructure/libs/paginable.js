@@ -33,7 +33,7 @@ const paginate = (query, params, literalSort = false) => {
   return paginationQuery;
 };
 
-const paginatedResponse = (data, params) => {
+const paginatedResult = (data, params) => {
   const total = data.count;
   const current_page = parseInt(params.page, 10) || 1;
   const per_page = parseInt(params.per_page, 10) || 10;
@@ -41,7 +41,7 @@ const paginatedResponse = (data, params) => {
   const from = current_page * per_page - per_page + 1;
   const to = current_page * per_page < total ? current_page * per_page : total;
 
-  const pResponse = {
+  return {
     total,
     per_page,
     current_page,
@@ -50,13 +50,15 @@ const paginatedResponse = (data, params) => {
     to: last_page >= current_page ? to : 0,
     data: data.rows,
   };
-
-  return response.getResponseCustom(200, pResponse);
 };
+
+const paginatedResponse = (data, params) =>
+  response.getResponseCustom(200, paginatedResult(data, params));
 
 const paginable = {};
 
 paginable.paginate = paginate;
+paginable.paginatedResult = paginatedResult;
 paginable.paginatedResponse = paginatedResponse;
 
 module.exports = paginable;
