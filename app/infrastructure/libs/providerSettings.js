@@ -90,6 +90,7 @@ module.exports = class ProviderSettings {
         port: process.env.MAIL_PORT,
         user: process.env.MAIL_USER,
         password: process.env.MAIL_PWD,
+        from: process.env.MAIL_FROM,
       });
 
       const instances = {
