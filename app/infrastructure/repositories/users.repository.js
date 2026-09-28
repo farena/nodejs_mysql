@@ -112,6 +112,7 @@ class UsersRepository {
     first_name,
     last_name,
     email,
+    role_id,
     password,
     reset_code,
     verification_code,
@@ -123,6 +124,7 @@ class UsersRepository {
     if (first_name) toUpd.first_name = first_name;
     if (last_name) toUpd.last_name = last_name;
     if (email) toUpd.email = email;
+    if (role_id) toUpd.role_id = role_id;
     if (password) toUpd.password = password;
     if (reset_code !== undefined) toUpd.reset_code = reset_code;
     if (last_login) toUpd.last_login = last_login;
