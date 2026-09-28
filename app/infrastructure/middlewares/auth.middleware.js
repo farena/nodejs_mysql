@@ -14,12 +14,18 @@ const authMiddleware = async (req, res, next) => {
     // we delete bearer this part before checking
     token = token.slice(7);
 
-    await jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, user) => {
-      if (err) throw new CustomError("Token has expired", 401);
+    let user;
+    try {
+      user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    } catch (err) {
+      throw new CustomError("Token has expired", 401);
+    }
 
-      req.user = user;
-      next();
-    });
+    // Refresh tokens can only be used to get a new access token
+    if (user.type === "refresh") throw new CustomError("Token is invalid", 401);
+
+    req.user = user;
+    next();
   } catch (err) {
     next(err);
   }
