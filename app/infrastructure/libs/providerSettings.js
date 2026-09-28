@@ -22,12 +22,6 @@ module.exports = class ProviderSettings {
     const gracefulShutdown = async () => {
       console.log("Graceful shutdown initiated...");
 
-      // Clear all pending retry timeouts
-      this.retryTimeouts.forEach((timeout) => {
-        clearTimeout(timeout);
-      });
-      this.retryTimeouts.clear();
-
       await this.closeConnection();
       process.exit(0);
     };
