@@ -93,8 +93,18 @@ module.exports = class ProviderSettings {
         from: process.env.MAIL_FROM,
       });
 
+      const settings = {
+        slug: "default",
+        // Base URL used to build links sent by email
+        domain: (process.env.FRONTEND_URL || process.env.BACKEND_URL || "").replace(
+          /\/$/,
+          ""
+        ),
+      };
+
       const instances = {
         db,
+        settings,
         models,
         mailer,
         jwt,
