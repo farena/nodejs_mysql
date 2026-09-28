@@ -1,6 +1,6 @@
 const role = require("../../_initial_database/__role_data");
 const functionality = require("../../_initial_database/__functionality_data");
-const endpoint = require("../../_initial_database/__endpoint_data");
+const { endpoints: endpoint } = require("../../_initial_database/__endpoint_data");
 
 async function updateRoleChildrenFunctionalities(
   queryInterface,
