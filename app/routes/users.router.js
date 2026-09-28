@@ -3,7 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 const routeACL = require("../infrastructure/middlewares/acl.middleware");
-const authMiddleware = require("../infrastructure/middlewares/auth.middleware");
+const {
+  authMiddleware,
+} = require("../infrastructure/middlewares/auth.middleware");
 
 router.get(
   "/users",
