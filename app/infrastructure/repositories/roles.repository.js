@@ -47,16 +47,20 @@ class RolesRepository {
     return role;
   }
 
-  async update({ role_id, name }) {
+  async update({ role_id, name, transaction }) {
     const role = await this.models.role.findByPk(role_id, {
       include: "functionalities",
+      transaction,
     });
 
     if (!role) throw new CustomError("Role not found", 404);
 
-    await role.update({
-      name,
-    });
+    await role.update(
+      {
+        name,
+      },
+      { transaction }
+    );
 
     return {
       ...role.toJSON(),
