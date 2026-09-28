@@ -34,6 +34,7 @@ class UpdateUser {
         last_name,
         email,
         role_id,
+        transaction,
       });
 
       return "User updated succesfully";
