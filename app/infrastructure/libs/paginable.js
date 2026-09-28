@@ -1,14 +1,21 @@
 const { literal } = require('sequelize');
 const response = require('./serviceUtil.js');
 
+const toPositiveInt = (value, defaultValue) => {
+  const number = parseInt(value, 10);
+  return Number.isInteger(number) && number > 0 ? number : defaultValue;
+};
+
 const paginate = (query, params, literalSort = false) => {
-  const page = params.page || 1;
-  const perPage = params.per_page || 10;
+  const page = toPositiveInt(params.page, 1);
+  const perPage = toPositiveInt(params.per_page, 10);
   const sortBy = params.sort_by || params.sortBy || null;
-  const sortDir = params.sort_dir || params.sortDir || 'ASC';
+  const sortDir = String(params.sort_dir || params.sortDir || 'ASC').toUpperCase() === 'DESC'
+    ? 'DESC'
+    : 'ASC';
 
   const offset = (page - 1) * perPage;
-  const limit = parseInt(perPage, 10);
+  const limit = perPage;
 
   const paginationQuery = {
     ...query,
@@ -35,9 +42,9 @@ const paginate = (query, params, literalSort = false) => {
 
 const paginatedResult = (data, params) => {
   const total = data.count;
-  const current_page = parseInt(params.page, 10) || 1;
-  const per_page = parseInt(params.per_page, 10) || 10;
-  const last_page = Math.ceil(data.count / (params.per_page || 10));
+  const current_page = toPositiveInt(params.page, 1);
+  const per_page = toPositiveInt(params.per_page, 10);
+  const last_page = Math.ceil(data.count / per_page);
   const from = current_page * per_page - per_page + 1;
   const to = current_page * per_page < total ? current_page * per_page : total;
 
