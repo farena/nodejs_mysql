@@ -64,6 +64,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      reset_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      last_login: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
       scopes: {
@@ -77,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
           ],
         },
         noPassword: {
-          attributes: { exclude: ["password"] },
+          attributes: { exclude: ["password", "reset_code"] },
         },
         search: fullTextSearch(sequelize, searchColumns),
       },
