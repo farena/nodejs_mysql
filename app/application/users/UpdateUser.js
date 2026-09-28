@@ -8,7 +8,7 @@ class UpdateUser {
   }
 
   async execute({ user_id, first_name, last_name, email, role_id }) {
-    if (user_id === 1) {
+    if (Number(user_id) === 1) {
       throw new CustomError("You cannot update the admin user", 403);
     }
 
