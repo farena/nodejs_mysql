@@ -7,6 +7,8 @@ class UpdateUserProfile {
 
   async execute({
     user_id,
+    first_name,
+    last_name,
     password,
     new_password,
     new_password_confirmation,
@@ -26,6 +28,8 @@ class UpdateUserProfile {
 
     await this.$user.update({
       user_id,
+      first_name,
+      last_name,
       password: new_password,
     });
 
