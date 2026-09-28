@@ -22,10 +22,6 @@ class SignInUser {
               association: "functionalities",
               include: "endpoints",
             },
-            {
-              association: "permissions",
-              required: false,
-            },
           ],
         },
       ],
