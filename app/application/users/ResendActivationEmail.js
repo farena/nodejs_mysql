@@ -12,6 +12,9 @@ class ResendActivationEmail {
       user_id,
     });
     if (!user) throw new CustomError("User not found", 404);
+    if (!user.verification_code) {
+      throw new CustomError("User is already verified", 412);
+    }
 
     await this.$mailer.sendMail({
       to: user.email,
