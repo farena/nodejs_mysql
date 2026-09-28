@@ -1,9 +1,45 @@
 const jwt = require('jsonwebtoken');
+const CustomError = require('../../domain/exceptions/CustomError');
 
-const generateAccessToken = (user) =>
-  // expires after half and hour (1800 seconds = 300 minutes = 5 hours)
-  jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '18000s' });
+module.exports = class JWT {
+  constructor(secret) {
+    this.secret = secret;
+  }
 
-module.exports = {
-  generateAccessToken,
+  // expires after 5 hours (18000 seconds)
+  generateAccessToken(payload) {
+    return jwt.sign(payload, this.secret, { expiresIn: '18000s' });
+  }
+
+  // expires after 30 days
+  generateRefreshToken(payload) {
+    return jwt.sign({ ...payload, type: 'refresh' }, this.secret, {
+      expiresIn: '30d',
+    });
+  }
+
+  verifyAccessToken(token) {
+    try {
+      return jwt.verify(token, this.secret);
+    } catch (error) {
+      throw new CustomError('Token has expired', 401);
+    }
+  }
+
+  verifyRefreshToken(token) {
+    if (!token) throw new CustomError('Refresh token is required', 412);
+
+    let payload;
+    try {
+      payload = jwt.verify(token, this.secret);
+    } catch (error) {
+      throw new CustomError('Refresh token is invalid or has expired', 401);
+    }
+
+    if (payload.type !== 'refresh') {
+      throw new CustomError('Refresh token is invalid or has expired', 401);
+    }
+
+    return payload;
+  }
 };
