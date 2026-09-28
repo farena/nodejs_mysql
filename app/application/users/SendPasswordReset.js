@@ -1,4 +1,5 @@
 const { v4 } = require("uuid");
+const CustomError = require("../../domain/exceptions/CustomError");
 
 class SendPasswordReset {
   constructor(usersRepository, mailerRepository, settings) {
@@ -8,9 +9,14 @@ class SendPasswordReset {
   }
 
   async execute({ email }) {
+    if (!email) throw new CustomError("Please send an email", 412);
+
     const user = await this.$user.getUserByEmail({
       email,
     });
+
+    // Same response for unknown emails, to avoid leaking which ones exist
+    if (!user) return "Email sent succesfully";
 
     const reset_code = v4();
 
